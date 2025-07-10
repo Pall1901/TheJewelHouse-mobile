@@ -21,7 +21,7 @@ const NavigationContainerComponent = () => {
 
     <NavigationContainer>
       <View style={{ flex: 1, ...backgroundStyle }}>
-        {user == null && (<AuthStackNavigator initialRouteName={ScreenName.LOGIN_SCREEN} />)}
+        {user == null && (<AuthStackNavigator initialRouteName={ScreenName.HOME_SCREEN} />)}
         {user && user._id && (<MainStackNavigator initialRouteName={ScreenName.HOME_SCREEN} />)}
         <FlashMessage position="bottom" animated={true} />
       </View>

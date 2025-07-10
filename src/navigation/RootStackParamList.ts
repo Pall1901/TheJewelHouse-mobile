@@ -5,6 +5,7 @@ import { ScreenName } from '../utils/enums';
 export type RootStackParamList = {
   [ScreenName.HOME_SCREEN]: undefined;
   [ScreenName.LOGIN_SCREEN]: undefined;
+  [ScreenName.QUOTATION_FORM_SCREEN]: undefined;
 };
 
 

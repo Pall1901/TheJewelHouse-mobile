@@ -40,14 +40,26 @@ export enum OperatingSystemType {
 export enum TabScreen {
   DASHBOARD = 'DASHBOARD',
   QUOTATION = 'QUOTATION',
-  HISTORY = 'HISTORY',
+  ORDERS = 'ORDERS',
   PROFILE = 'PROFILE',
 }
 
 
 export enum ScreenName {
- HOME_SCREEN = 'HomeScreen',
+  HOME_SCREEN = 'HomeScreen',
   LOGIN_SCREEN = 'LoginScreen',
+  QUOTATION_FORM_SCREEN = 'QuotationFormScreen',
+}
+
+export enum GoldPurity {
+  GOLD_14 = '14k',
+  GOLD_18 = '18k',
+}
+
+export enum GoldColor {
+  YELLOW = 'Yellow',
+  WHITE = 'White',
+  ROSE = 'Rose',
 }
 
 

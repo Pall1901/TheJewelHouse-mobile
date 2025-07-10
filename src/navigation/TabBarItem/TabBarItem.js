@@ -11,14 +11,14 @@ import PropTypes from 'prop-types';
 const icons = {
   DASHBOARD: 'home',
   QUOTATION: 'portfolio',
-  HISTORY: 'orders',
+  ORDERS: 'orders',
   PROFILE: 'profile'
 };
 
 const label = {
   DASHBOARD: 'Dashboard',
   QUOTATION: 'Quotation',
-  HISTORY: 'History',
+  ORDERS: 'Orders',
   PROFILE: 'Profile'
 
 };

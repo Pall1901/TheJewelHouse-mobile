@@ -8,11 +8,12 @@ import { ScreenName, TabScreen } from '../utils/enums';
 import { RootStackParamList } from './RootStackParamList';
 import TabBarItem from './TabBarItem/TabBarItem';
 import HomeScreen from '../screens/HomeScreen';
-import DashboardScreen from '../screens/DashboardScreen';
-import QuotationScreen from '../screens/QuotationScreen';
-import HistoryScreen from '../screens/HistoryScreen';
-import ProfileScreen from '../screens/ProfileScreen';
 import LoginScreen from '../screens/LoginScreen/LoginScreen';
+import DashboardScreen from '../screens/DashboardScreen/DashboardScreen';
+import QuotationScreen from '../screens/QuotationScreen/QuotationScreen';
+import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
+import OrdersScreen from '../screens/OrdersScreen/OrdersScreen';
+import QuotationFormScreen from '../screens/QuotationFormScreen/QuotationFormScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -41,6 +42,10 @@ const MainStackNavigator = ({
         component={HomeScreen}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name={ScreenName.QUOTATION_FORM_SCREEN}
+        component={QuotationScreen}
+        options={{ headerShown: false }}/>
     </Stack.Navigator>
   );
 };
@@ -68,6 +73,10 @@ const AuthStackNavigator = ({
         component={HomeScreen}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name={ScreenName.QUOTATION_FORM_SCREEN}
+        component={QuotationFormScreen}
+        options={{ headerShown: false }}/>
     </Stack.Navigator>
   );
 };
@@ -77,7 +86,7 @@ const Tab = createBottomTabNavigator();
 const TabArr = [
   { route: TabScreen.DASHBOARD, title: 'Dashboard', component: DashboardScreen },
   { route: TabScreen.QUOTATION, title: 'Quotation', component: QuotationScreen },
-  { route: TabScreen.HISTORY, title: 'History', component: HistoryScreen },
+  { route: TabScreen.ORDERS, title: 'Orders', component: OrdersScreen },
   { route: TabScreen.PROFILE, title: 'Profile', component: ProfileScreen },
 ];
 

@@ -5,7 +5,7 @@ import AppColor from '../../app-res/AppColor';
 interface BackgroundViewComponentProps{
     children: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined;
     onPress: any;
-    screen : string;
+    screen? : string;
     button : string;
     disabled?:boolean
  }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   Animated,
   Pressable,
+  Text,
   TextInput,
   TextInputProps,
   TouchableOpacity,
@@ -11,6 +12,7 @@ import MaskInput from 'react-native-mask-input';
 import AppColor from '../../app-res/AppColor';
 import AppDimension from '../../app-res/AppDimension';
 import AppFontSize from '../../app-res/AppFontSize';
+import { tID } from '../../utils/Helper';
 import Icon, { Icons } from '../Icon/Icons';
 import { styles } from './styles';
 
@@ -37,8 +39,7 @@ interface BaseInputprops {
   | null
   | undefined;
   screen?: string;
-  maxLength?: number;
-  onBlur:any;
+  maxLength?: number
 }
 
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
@@ -59,19 +60,20 @@ const TextInputComponent = ({
   iconType,
   screen = '',
   maxLength,
-  onBlur
+  placeholder,
+  
 }: TextInputProps & BaseInputprops) => {
   const [passwordVisible, setPasswordVisible] = useState(secureTextEntry);
   const [isFocused, setIsFocused] = useState(false);
 
   const animatedValue = new Animated.Value(isFocused || value !== '' ? 1 : 0);
 
-  // const handleFocus = () => setIsFocused(true);
+  const handleFocus = () => setIsFocused(true);
   const handleBlur = () => setIsFocused(false);
 
   const translateY = animatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [AppDimension.SPACING_Y_16, 0],
+    outputRange: [AppDimension.SPACING_Y_15, 0],
   });
 
 
@@ -86,10 +88,9 @@ const TextInputComponent = ({
 
 
   return (
-    <View style={[{ marginBottom: AppDimension.SPACING_Y_20 }, wrapperStyle]}>
+    <View style={[{ marginBottom: AppDimension.SPACING_Y_10 }, wrapperStyle]}>
+       <Text style={styles.title}>{title}</Text>
       <View style={[styles.container, flag && styles.textMargin]}>
-
-        <Animated.Text style={labelStyle}>{title}</Animated.Text>
 
         <View
           style={[
@@ -104,38 +105,40 @@ const TextInputComponent = ({
           {keyboardType == "number-pad" ?
             <MaskInput
               accessible={true}
-              
+              testID={tID(`${screen}-textInput-${title?.replaceAll(/\s/g, '')}`)}
               accessibilityLabel={`${screen}-textInput-${title?.replaceAll(/\s/g, '')}`}
               value={value}
               style={{ flex: 1, color: AppColor.black }}
-              keyboardType={"number-pad"}
+              keyboardType={keyboardType || 'default'}
               secureTextEntry={passwordVisible}
               editable={editable}
+              placeholder={placeholder}
               contextMenuHidden={contextMenuHidden}
-              onFocus={onBlur}
-              onBlur={onBlur}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
               returnKeyType='done'
               onChangeText={(masked, unmasked) => {
                 onChangeText && onChangeText(unmasked);
               }}
-              ///\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/
               mask={[...Array(maxLength ?? 10)].map((_, indx: number) => /\d/)}
               placeholderFillCharacter=""
             />
             :
-            <AnimatedTextInput
+            <TextInput
               accessible={true}
+              testID={tID(`${screen}-textInput-${title?.replaceAll(/\s/g, '')}`)}
               accessibilityLabel={`${screen}-textInput-${title?.replaceAll(/\s/g, '')}`}
               value={value}
+              placeholder={placeholder}
+              placeholderTextColor={AppColor.greyLight}
               style={{ flex: 1, color: AppColor.black }}
               onChangeText={onChangeText}
-              keyboardType={keyboardType ?? 'default'}
+              keyboardType={keyboardType || 'default'}
               secureTextEntry={passwordVisible}
               editable={editable}
               contextMenuHidden={contextMenuHidden}
-              onFocus={onBlur}
-              onBlur={onBlur}
-              maxLength={maxLength}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
             />
 
           }
@@ -144,9 +147,10 @@ const TextInputComponent = ({
         {iconVisible != '' ? (
           <Pressable
             accessible={true}
+            testID={tID(`${screen}-icon-${iconType}`)}
             accessibilityLabel={`${screen}-icon-${iconType}`}
             onPress={onPress}>
-            <Icon type={iconType} size={25} name={iconVisible} color={AppColor.primaryGreen} />
+            <Icon type={iconType} size={25} name={iconVisible} color={AppColor.grey2} />
           </Pressable>
 
 
@@ -154,12 +158,14 @@ const TextInputComponent = ({
         {secureTextEntry ? (
           <TouchableOpacity
             accessible={true}
+            testID={tID(`${screen}-icon-password`)}
+            accessibilityLabel={`${screen}-icon-password`}
             onPress={() => {
               setPasswordVisible(!passwordVisible);
             }}>
             <Icon
               size={25}
-              color={AppColor.primaryGreen}
+              color={AppColor.grey2}
               name={passwordVisible ? 'eye' : 'eye-with-line'}
               type={Icons.Entypo}
             />

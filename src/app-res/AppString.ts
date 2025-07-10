@@ -179,6 +179,7 @@ For day-ahead trading, Kindly place your orders before 5:00 PM.`,
       'Enable users to rate and review each other based on their trading experiences, helping to build trust within the community.',
   },
   dashboardScreen: {
+    header : 'Dashboard',
     news: 'News & Update: ',
     headline: `Empowering Future Energy: NPCL's Blockchain-based Trading Revolution.`,
     trendsText: `Orders Trades & Settlement`,
