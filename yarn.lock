@@ -3422,6 +3422,7 @@ __metadata:
     react-native-mask-input: ^1.2.3
     react-native-modal: ^14.0.0-rc.1
     react-native-offline: 6.0.2
+    react-native-raw-bottom-sheet: ^3.0.0
     react-native-safe-area-context: ^5.4.0
     react-native-screens: ^3.29.0
     react-native-svg: ^15.12.0
@@ -9816,6 +9817,13 @@ __metadata:
     redux: ">=3"
     redux-saga: ">=1.x"
   checksum: ddffb7daf2fbe1f890b132c035be6bc4acf3dd99af79d6564232b456442ad21ec68c4976b5ae3a6935c7ebc2bb20937a1953a6f116eb32dd03af8c29286a8609
+  languageName: node
+  linkType: hard
+
+"react-native-raw-bottom-sheet@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "react-native-raw-bottom-sheet@npm:3.0.0"
+  checksum: bd8cb9fff9240d1d09279910498efb26df80631f697fd7d93352f1247f30880d6ec6d1c978822f59d1cd375b03c9dad48d6f520935fde13b7ae35ec8305a2694
   languageName: node
   linkType: hard
 
