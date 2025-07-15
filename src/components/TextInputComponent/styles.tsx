@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
       borderWidth:1,
       borderColor:AppColor.primary,
       alignItems: 'center',
-      paddingEnd: AppDimension.SPACING_X_10,
+     // paddingEnd: AppDimension.SPACING_X_10,
       flexDirection: 'row',
     },
     textInput: {
@@ -39,11 +39,11 @@ export const styles = StyleSheet.create({
       fontFamily: AppFontFamily.ManropeBold,
     },
     textInput1: {
-      //color: AppColor.primary,
-      height: AppDimension.SPACING_Y_100,
+      backgroundColor : AppColor.greyLighter,
+      height: AppDimension.SPACING_Y_48,
     },
     textMargin: {
-      height: AppDimension.SPACING_Y_100,
+      //height: AppDimension.SPACING_Y_100,
       //marginTop: AppDimension.SPACING_Y_20,
     },
   });

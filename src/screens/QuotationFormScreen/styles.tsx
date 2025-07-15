@@ -38,5 +38,11 @@ export const styles = StyleSheet.create({
         color: AppColor.black,
         fontFamily: AppFontFamily.ManropeBold,
     },
+    row :{
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        marginTop: AppDimension.SPACING_Y_20,
+    }
    
 });

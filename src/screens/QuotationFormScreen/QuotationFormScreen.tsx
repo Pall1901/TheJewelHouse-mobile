@@ -40,7 +40,30 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
       labourCost: '',
       totalLabourPrice: '',
     },
-    diamondDetails: [],
+    diamondDetails: [
+      {
+      type: 'center',
+      shape: '',
+      size: '',
+      color: '',
+      clarity: '',
+      weight: '',
+      ratePerCts: '',
+      discount: '',
+      totalAmount: '',
+    },
+    {
+      type: 'side',
+      shape: '',
+      size: '',
+      color: '',
+      clarity: '',
+      weight: '',
+      ratePerCts: '',
+      discount: '',
+      totalAmount: '',
+    },
+    ],
     quotationSummary: { goldCost: '', labourCost: '', diamondCost: '', gst: '', total: '' },
   });
 
