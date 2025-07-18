@@ -158,6 +158,14 @@ const parseFloatNumber = value => {
   return '-';
 };
 
+const formatNumberWithCommas = (num) => {
+  if (!num) return '0';
+  return Number(num).toLocaleString('en-IN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+};
+
 
 
 const isDebugMode = () => __DEV__;
@@ -181,5 +189,6 @@ export {
   formatNumber1,
   maskMobileNumber,
   parseFloatNumber,
-  isDebugMode
+  isDebugMode,
+  formatNumberWithCommas,
 };

@@ -1,5 +1,4 @@
 import { RouteProp } from '@react-navigation/native';
-import { MAIN_URL } from '@env';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Formik } from 'formik';
 import React, { useState } from 'react';
@@ -26,6 +25,7 @@ import { ScreenName } from '../../utils/enums';
 import { loginValidationSchema } from './Components/Validation';
 import AppDimension from '../../app-res/AppDimension';
 import { styles } from './styles';
+import useLogin from './Hook/useLogin';
 
 type LoginProps = {
   navigation: NativeStackNavigationProp<
@@ -37,11 +37,11 @@ type LoginProps = {
 
 const LoginScreen = (props: LoginProps) => {
   const { loader } = useSelector((state: any) => state.UserReducer);
- // const { loginCheck } = useLogin(props.navigation);
+  const { loginCheck } = useLogin(props.navigation);
 
   const login = (values: any) => {
-    props.navigation.navigate(ScreenName.HOME_SCREEN)
-   // loginCheck(values);
+   // props.navigation.navigate(ScreenName.HOME_SCREEN)
+    loginCheck(values);
   };
 
   return (
@@ -51,9 +51,6 @@ const LoginScreen = (props: LoginProps) => {
       resizeMode='stretch'>
       <View style={styles.container}>
         {loader && <Loader screenName='LoginScreen' />}
-        
-        
-         
           <Image
             source={AppImages.logo}
             resizeMode='contain'

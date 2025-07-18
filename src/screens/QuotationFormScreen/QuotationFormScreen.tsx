@@ -42,27 +42,27 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
     },
     diamondDetails: [
       {
-      type: 'center',
-      shape: '',
-      size: '',
-      color: '',
-      clarity: '',
-      weight: '',
-      ratePerCts: '',
-      discount: '',
-      totalAmount: '',
-    },
-    {
-      type: 'side',
-      shape: '',
-      size: '',
-      color: '',
-      clarity: '',
-      weight: '',
-      ratePerCts: '',
-      discount: '',
-      totalAmount: '',
-    },
+        type: 'center',
+        shape: '',
+        size: '',
+        color: '',
+        clarity: '',
+        weight: '',
+        ratePerCts: '',
+        discount: '',
+        totalAmount: '',
+      },
+      {
+        type: 'side',
+        shape: '',
+        size: '',
+        color: '',
+        clarity: '',
+        weight: '',
+        ratePerCts: '',
+        discount: '',
+        totalAmount: '',
+      },
     ],
     quotationSummary: { goldCost: '', labourCost: '', diamondCost: '', gst: '', total: '' },
   });
@@ -94,9 +94,10 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
       )}
       {currentStep === 3 && (
         <QuotationSummarySection
-          data={quotationForm.quotationSummary}
-          onChange={(updated: any) =>
-            setQuotationForm({ ...quotationForm, quotationSummary: updated })
+          quotationForm={quotationForm}
+          data ={quotationForm.quotationSummary}
+          onChange={(updated: Partial<QuotationForm>) =>
+            setQuotationForm((prev) => ({ ...prev, ...updated }))
           }
           onSubmit={handleSubmit}
         />

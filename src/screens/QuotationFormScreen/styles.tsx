@@ -38,11 +38,49 @@ export const styles = StyleSheet.create({
         color: AppColor.black,
         fontFamily: AppFontFamily.ManropeBold,
     },
-    row :{
+    row: {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         marginTop: AppDimension.SPACING_Y_20,
-    }
-   
+    },
+    card: {
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        padding: 14,
+        marginBottom: AppDimension.SPACING_X_10,
+    },
+
+    sectionHeader: {
+        fontSize: 16,
+        fontWeight: '600',
+        marginBottom: 12,
+        color: '#333',
+    },
+    sectionHeaderContainer: {
+        borderBottomWidth: 1,
+        borderStyle: 'dotted',
+        borderColor: '#bbb',
+        // marginBottom: 12,
+    },
+
+    finalCard: {
+        backgroundColor: '#f9f9f9',
+        borderColor: '#ccc',
+        borderWidth: 1,
+    },
+
+    finalLabel: {
+        fontSize: 16,
+        fontWeight: '600',
+    },
+
+    finalAmount: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: AppColor.primary, // deep green or use your theme color
+    },
+
+
 });
