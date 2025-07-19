@@ -29,20 +29,7 @@ function App() {
         )}
       </View>
     </SafeAreaProvider>
-    // <Provider store={store}>
-    //   <PersistGate persistor={persistor} loading={null}>
-    //     <SafeAreaProvider>
-    //       <View style={styles.container}>
-    //         <GeneralStatusBarColor backgroundColor={AppColor.statusBarBg} barStyle="light-content" />
-    //         {Platform.OS === OperatingSystemType.IOS ? (
-    //           <SafeAreaView style={styles.safeAreaView}><NavigationContainerComponent /></SafeAreaView>
-    //         ) : (
-    //           <SafeView style={styles.container}><NavigationContainerComponent /></SafeView>
-    //         )}
-    //       </View>
-    //     </SafeAreaProvider>
-    //   </PersistGate>
-    // </Provider>
+  
   );
 }
 

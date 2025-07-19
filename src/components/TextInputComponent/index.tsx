@@ -113,6 +113,7 @@ const TextInputComponent = ({
               secureTextEntry={passwordVisible}
               editable={editable}
               placeholder={placeholder}
+              placeholderTextColor={AppColor.greyLight}
               contextMenuHidden={contextMenuHidden}
               onFocus={handleFocus}
               onBlur={handleBlur}

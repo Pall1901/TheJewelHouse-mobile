@@ -1,20 +1,19 @@
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Keyboard } from 'react-native';
-import { useDispatch } from 'react-redux';
 import { login } from '../../../api-services/api';
-import { loginUser, setLoader } from '../../../redux/User/UserActions';
+import { useUser } from '../../../ayncStorage/UserContext';
 import { checkInternet, showToastMessage } from '../../../utils/Helper';
-import { HttpStatusCode } from '../../../utils/enums';
 
 type UseLoginReturnType = {
     loginCheck: (values: any) => void;
 };
 const useLogin = (navigation: any): UseLoginReturnType => {
 
-    const dispatch = useDispatch();
+    const { setLoader, setUser } = useUser();
 
     const loginCheck = (values: any) => {
-        dispatch(setLoader(false));
+        setLoader(false);
         const checkInternetStatus = async () => {
             const isConnected = await checkInternet()
             if (isConnected) {
@@ -32,25 +31,33 @@ const useLogin = (navigation: any): UseLoginReturnType => {
             mobile: values.phone,
             password: values.password
         };
-        dispatch(setLoader(true));
+        setLoader(true);
 
         try {
             const res = await login(datas);
             const { data = {} } = res;
-            if (data?.code == HttpStatusCode.OK) {
-                console.log(data.data);
-                dispatch(loginUser(data.data.user));
-                // dispatch(setRole(selected))
-            }
-            else {
-                showToastMessage(data.message, 'danger');
-            }
+            const userDetails = data.data.user;
+            setUser(userDetails);
+            await AsyncStorage.setItem('user', JSON.stringify(userDetails));
+            showToastMessage(data.message, 'success');
+            navigation.navigate('HomeScreen');
+            // if (data?.code == HttpStatusCode.OK) {                
+            //     const userDetails = data.data.user;
+            //     setUser(userDetails);
+            //     await AsyncStorage.setItem('user', JSON.stringify(userDetails));
+            //     showToastMessage(data.message, 'success');
+            //     navigation.navigate('HomeScreen');
+            // }
+            // else {
+            //     console.log('here');
+            //     showToastMessage(data.message, 'danger');
+            // }
         } catch (error) {
-            dispatch(setLoader(false));
+            setLoader(false);
             console.log('error', error);
             showToastMessage(JSON.stringify(error?.message), 'danger');
         } finally {
-            dispatch(setLoader(false));
+            setLoader(false);
         }
     };
 

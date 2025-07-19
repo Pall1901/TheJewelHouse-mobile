@@ -1,25 +1,26 @@
 import React from 'react';
-import { View, Image } from 'react-native';
-import AppImages from '../../app-res/AppImages';
-import { styles } from './styles';
+import {View, Text, ActivityIndicator, StyleSheet} from 'react-native';
 
-const Loader = ({ screenName }: { screenName?: string }) => {
-    const testID = `${screenName}-loader`
-
+const Loader = () => {
     return (
-        <View style={styles.container}
-            accessible={true}
-            testID={testID}
-            accessibilityLabel={testID}
-        >
-            <Image
-                resizeMode='contain'
-                style={{ width: 120, height: 60 }}
-                source={{ uri : AppImages.loader}}
-            />
+        <View style={styles.container}>
+            <ActivityIndicator size="large" color="#fff" />
         </View>
     );
 };
 
-
+const styles = StyleSheet.create({
+    container: {
+        height: '100%',
+        width: '100%',
+        position: 'absolute',
+        alignSelf: 'center',
+        backgroundColor: '#000000a8',
+        alignItems: 'center',
+        zIndex: 100,
+        shadowOffset: {width: 2, height: 4}, // for IOS
+        elevation: 10, // for Android
+        justifyContent: 'center',
+    },
+});
 export default Loader;

@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { Pressable, Text, View } from 'react-native';
-import { useDispatch } from 'react-redux';
 import AppColor from '../../app-res/AppColor';
 import AppDimension from '../../app-res/AppDimension';
 import AppSvgIcon from '../../app-res/AppSvgIcon';
@@ -25,7 +24,6 @@ const label = {
 
 
 const TabBarItem = ({ state, navigation }) => {
-  const dispatch = useDispatch()
   return (
 
     <View style={styles.mainContainer}>

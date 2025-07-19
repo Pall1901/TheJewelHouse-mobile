@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
       borderWidth:1,
       borderColor:AppColor.primary,
       alignItems: 'center',
-     // paddingEnd: AppDimension.SPACING_X_10,
+      paddingEnd: AppDimension.SPACING_X_10,
       flexDirection: 'row',
     },
     textInput: {

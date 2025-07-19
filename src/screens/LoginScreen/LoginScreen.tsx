@@ -1,31 +1,28 @@
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Formik } from 'formik';
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Image,
   ImageBackground,
-  Linking,
   Text,
   View
 } from 'react-native';
-import { useSelector } from 'react-redux';
-import AppColor from '../../app-res/AppColor';
+import AppDimension from '../../app-res/AppDimension';
 import AppImages from '../../app-res/AppImages';
 import AppString from '../../app-res/AppString';
+import { useUser } from '../../ayncStorage/UserContext';
 import ButtonComponent from '../../components/ButtonComponent';
 import ErrorComponent from '../../components/ErrorComponent';
 import { Icons } from '../../components/Icon/Icons';
 import KeyboardAvoidingViewComponent from '../../components/KeyboardAvoidingViewComponent';
 import Loader from '../../components/Loader/Loader';
-import PressableComponent from '../../components/PressableComponent';
 import TextInputComponent from '../../components/TextInputComponent';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { ScreenName } from '../../utils/enums';
 import { loginValidationSchema } from './Components/Validation';
-import AppDimension from '../../app-res/AppDimension';
-import { styles } from './styles';
 import useLogin from './Hook/useLogin';
+import { styles } from './styles';
 
 type LoginProps = {
   navigation: NativeStackNavigationProp<
@@ -36,7 +33,7 @@ type LoginProps = {
 };
 
 const LoginScreen = (props: LoginProps) => {
-  const { loader } = useSelector((state: any) => state.UserReducer);
+  const { loader } = useUser();
   const { loginCheck } = useLogin(props.navigation);
 
   const login = (values: any) => {
@@ -50,7 +47,7 @@ const LoginScreen = (props: LoginProps) => {
       style={{ flex: 1 }}
       resizeMode='stretch'>
       <View style={styles.container}>
-        {loader && <Loader screenName='LoginScreen' />}
+        {loader && <Loader />}
           <Image
             source={AppImages.logo}
             resizeMode='contain'
@@ -99,7 +96,7 @@ const LoginScreen = (props: LoginProps) => {
 
                     <TextInputComponent
                       title="Mobile No"
-                      placeholder="9876543210"
+                      placeholder="999999999"
                       onChangeText={handleChange('phone')}
                       onBlur={handleBlur('phone')}
                       value={values.phone}

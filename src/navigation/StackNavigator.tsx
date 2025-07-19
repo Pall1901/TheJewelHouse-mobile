@@ -44,7 +44,7 @@ const MainStackNavigator = ({
       />
       <Stack.Screen
         name={ScreenName.QUOTATION_FORM_SCREEN}
-        component={QuotationScreen}
+        component={QuotationFormScreen}
         options={{ headerShown: false }}/>
     </Stack.Navigator>
   );
@@ -56,7 +56,6 @@ const AuthStackNavigator = ({
 }: {
   initialRouteName: keyof RootStackParamList;
 }) => {
-  console.log('AuthStackNavigator initialRouteName:', initialRouteName);
   
   return (
     <Stack.Navigator
@@ -68,7 +67,7 @@ const AuthStackNavigator = ({
         component={LoginScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name={ScreenName.HOME_SCREEN}
         component={HomeScreen}
         options={{ headerShown: false }}
@@ -76,7 +75,7 @@ const AuthStackNavigator = ({
       <Stack.Screen
         name={ScreenName.QUOTATION_FORM_SCREEN}
         component={QuotationFormScreen}
-        options={{ headerShown: false }}/>
+        options={{ headerShown: false }}/> */}
     </Stack.Navigator>
   );
 };
