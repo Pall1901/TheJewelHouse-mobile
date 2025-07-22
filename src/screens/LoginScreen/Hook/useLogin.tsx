@@ -1,16 +1,17 @@
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Keyboard } from 'react-native';
 import { login } from '../../../api-services/api';
-import { useUser } from '../../../ayncStorage/UserContext';
 import { checkInternet, showToastMessage } from '../../../utils/Helper';
+import { HttpStatusCode } from '../../../utils/enums';
+import { useUser } from '../../../ayncStorage/UserContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type UseLoginReturnType = {
     loginCheck: (values: any) => void;
 };
 const useLogin = (navigation: any): UseLoginReturnType => {
 
-    const { setLoader, setUser } = useUser();
+  const { setLoader, setUser } = useUser();
 
     const loginCheck = (values: any) => {
         setLoader(false);
@@ -36,25 +37,19 @@ const useLogin = (navigation: any): UseLoginReturnType => {
         try {
             const res = await login(datas);
             const { data = {} } = res;
-            const userDetails = data.data.user;
-            setUser(userDetails);
-            await AsyncStorage.setItem('user', JSON.stringify(userDetails));
-            showToastMessage(data.message, 'success');
-            navigation.navigate('HomeScreen');
-            // if (data?.code == HttpStatusCode.OK) {                
-            //     const userDetails = data.data.user;
-            //     setUser(userDetails);
-            //     await AsyncStorage.setItem('user', JSON.stringify(userDetails));
-            //     showToastMessage(data.message, 'success');
-            //     navigation.navigate('HomeScreen');
-            // }
-            // else {
-            //     console.log('here');
-            //     showToastMessage(data.message, 'danger');
-            // }
+            if (data?.code == HttpStatusCode.OK) {                
+                const userDetails = data.data.user;
+                setUser(userDetails);
+                await AsyncStorage.setItem('user', JSON.stringify(userDetails));
+                showToastMessage(data.message, 'success');
+                navigation.navigate('HomeScreen');
+            }
+            else {
+                console.log('here');
+                showToastMessage(data.message, 'danger');
+            }
         } catch (error) {
             setLoader(false);
-            console.log('error', error);
             showToastMessage(JSON.stringify(error?.message), 'danger');
         } finally {
             setLoader(false);

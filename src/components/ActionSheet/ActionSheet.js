@@ -24,7 +24,7 @@ const ActionSheet = props => {
     <View style={styles.modalContent} testID={`actionSheet-view`}>
       {/* Scrollable list of main items */}
       <ScrollView
-        style={{ maxHeight: 300 }} // adjust as needed
+        style={{ maxHeight: 400 }} // adjust as needed
         bounces={false}
       >
         {actionItems.map((actionItem, index) => {

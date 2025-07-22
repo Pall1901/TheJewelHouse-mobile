@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { QuotationForm } from '../../utils/types';
-import GoldDetailsSection from './Components/GoldDetailsSection';
 import DiamondDetailsSection from './Components/DiamondDetailsSection';
+import GoldDetailsSection from './Components/GoldDetailsSection';
 import QuotationSummarySection from './Components/QuotationSummarySection';
 
 type QuotationFormProps = {
@@ -47,7 +47,6 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
         size: '',
         color: '',
         clarity: '',
-        weight: '',
         ratePerCts: '',
         discount: '',
         totalAmount: '',
@@ -58,13 +57,12 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
         size: '',
         color: '',
         clarity: '',
-        weight: '',
         ratePerCts: '',
         discount: '',
         totalAmount: '',
       },
     ],
-    quotationSummary: { goldCost: '', labourCost: '', diamondCost: '', gst: '', total: '' },
+    quotationSummary: { goldCost: '', labourCost: '', diamondCost: '', gst: '', total: '',finalTotal :'' },
   });
 
   const handleSubmit = () => {
@@ -76,6 +74,7 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
     <View style={{ flex: 1 }}>
       {currentStep === 1 && (
         <GoldDetailsSection
+         
           data={quotationForm.goldDetails}
           onChange={(updated: any) =>
             setQuotationForm({ ...quotationForm, goldDetails: updated })

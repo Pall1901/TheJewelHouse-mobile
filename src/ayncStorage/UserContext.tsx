@@ -8,6 +8,8 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<UserType | null>(null);
     const [loader, setLoader] = useState<boolean>(false);
+    const [goldRateData, setGoldRateData] = useState(null);
+    const [dropdown, setDropdown] = useState(null);
 
     // Load user on app start
     useEffect(() => {
@@ -29,17 +31,29 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <UserContext.Provider value={{ user, login, logout, loader, setLoader, setUser }}>
+        <UserContext.Provider
+            value={{
+                user,
+                login,
+                logout,
+                loader,
+                setLoader,
+                setUser,
+                goldRateData,         // ✅ Provide it
+                setGoldRateData,      // ✅ Provide setter
+                dropdown,             // ✅ Provide dropdown
+                setDropdown,          // ✅ Provide setter for dropdown
+            }}>
             {children}
         </UserContext.Provider>
     );
 };
 
 export const useUser = () => {
-  const context = useContext(UserContext);
-  if (!context) {
-    throw new Error('useUser must be used within a UserProvider');
-  }
-  return context;
+    const context = useContext(UserContext);
+    if (!context) {
+        throw new Error('useUser must be used within a UserProvider');
+    }
+    return context;
 };
 

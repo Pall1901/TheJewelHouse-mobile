@@ -1,5 +1,5 @@
-import { ScrollView, Text, View } from 'react-native';
-import React from 'react';
+import { ScrollView, Text, ToastAndroid, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
 import { DiamondDetails } from '../../../utils/types';
 import globalStyles from '../../../theme/globalStyles';
 import Header from '../../../components/Header';
@@ -10,6 +10,11 @@ import AppDimension from '../../../app-res/AppDimension';
 import CustomDropdown from '../../../components/CustomDropdown/CustomDropdown';
 import TextInputComponent from '../../../components/TextInputComponent';
 import ButtonComponent from '../../../components/ButtonComponent';
+import { debounce } from 'lodash';
+import useQuotationAPI from '../Hook/useQuotationAPI';
+import Loader from '../../../components/Loader/Loader';
+import { useUser } from '../../../ayncStorage/UserContext';
+import { formatNumberWithCommas } from '../../../utils/Helper';
 
 interface Props {
   data: DiamondDetails[];
@@ -17,38 +22,60 @@ interface Props {
   onNext: () => void;
 }
 
-const shapes = [
-  { value: 'pear', name: 'Pear' },
-  { value: 'marquise', name: 'Marquise' },
-  { value: 'emerald', name: 'Emerald' },
-  { value: 'heart', name: 'Heart' },
-];
-
-const color = [
-  { value: 'D', name: 'D' },
-  { value: 'E', name: 'E' },
-  { value: 'E-F', name: 'E-F' },
-  { value: 'G', name: 'G' },
-];
-
-const clarity = [
-  { value: 'VVS1', name: 'VVS1' },
-  { value: 'VVS2', name: 'VVS2' },
-  { value: 'VS1', name: 'VS1' },
-  { value: 'VS2', name: 'VS2' },
-];
-
 const discount = Array.from({ length: 10 }, (_, i) => ({
   value: `${i + 1}`,
   name: `${i + 1}`,
 }));
 
+type DropdownItem = {
+  value: string;
+  name: string;
+};
+
+
 const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
+  const { loader, dropdown } = useUser();
   const navigation = useNavigation();
+
+  const [diamondRateData, setDiamondRateData] = useState<{ [index: number]: any }>({});
+  const { fetchDiamondRate } = useQuotationAPI(
+    (index: any, rateData: any) => {
+      setDiamondRateData(prev => ({
+        ...prev,
+        [index]: rateData,
+      }));
+    }
+  );
+
+  useEffect(() => {
+    Object.entries(diamondRateData).forEach(([indexStr, rateData]) => {
+      const index = Number(indexStr);
+      if (
+        data[index] &&
+        rateData?.price &&
+        data[index].ratePerCts !== String(rateData.price)
+      ) {
+        const updatedDiamond = {
+          ...data[index],
+          ratePerCts: String(rateData.price),
+        };
+        handleUpdateDiamond(index, updatedDiamond);
+      }
+    });
+  }, [diamondRateData]);
+
+
+  const [shapes, setShapeOptions] = useState<DropdownItem[]>([]);
+  const [color, setColorOptions] = useState<DropdownItem[]>([]);
+  const [clarity, setClarityOptions] = useState<DropdownItem[]>([]);
 
   // Separate center and side diamonds
   const centerDiamonds = data.filter(d => d.type === 'center');
   const sideDiamonds = data.filter(d => d.type === 'side');
+
+  const isValidSize = (size: string) => {
+    return size?.trim().length >= 3;
+  };
 
   const handleAddDiamond = (type: 'center' | 'side') => {
     const newDiamond: DiamondDetails = {
@@ -57,7 +84,6 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
       size: '',
       color: '',
       clarity: '',
-      weight: '',
       ratePerCts: '',
       discount: '',
       totalAmount: '',
@@ -65,11 +91,94 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
     onChange([...data, newDiamond]);
   };
 
-  const handleUpdateDiamond = (index: number, updated: DiamondDetails) => {
-    const updatedDiamonds = [...data];
-    updatedDiamonds[index] = updated;
-    onChange(updatedDiamonds);
+  const transformAsIs = (array: string[]) => {
+    return array.map(item => ({
+      value: item,
+      name: item
+    }));
   };
+
+  useEffect(() => {
+    setColorOptions(transformAsIs(dropdown.diamondColors));
+    setClarityOptions(transformAsIs(dropdown.diamondPurity));
+    setShapeOptions(transformAsIs(dropdown.diamondShapes));
+  }, []);
+
+  const prevValuesRef = useRef({
+    size: '',
+    shape: '',
+    color: '',
+    clarity: '',
+  });
+
+  const handleUpdateDiamond = (index: number, updatedDiamond: DiamondDetails) => {
+    const { ratePerCts, discount } = updatedDiamond;
+    updatedDiamond.totalAmount =ratePerCts
+    let totalAmount = updatedDiamond.totalAmount;
+    if (ratePerCts && discount) {
+      totalAmount = calculateTotalAmount(ratePerCts, discount);
+    }
+
+    const updatedDiamonds = [...data];
+    updatedDiamonds[index] = { ...updatedDiamond, totalAmount };
+    onChange(updatedDiamonds);
+
+    const { size, shape, color, clarity } = updatedDiamond;
+
+    if (shape && color && clarity && isValidSize(size)) {
+      const hasChanged =
+        size !== prevValuesRef.current.size ||
+        shape !== prevValuesRef.current.shape ||
+        color !== prevValuesRef.current.color ||
+        clarity !== prevValuesRef.current.clarity;
+
+      if (hasChanged) {
+        setDiamondRateData(prev => {
+          const updated = { ...prev };
+          delete updated[index];
+          return updated;
+        });
+        debouncedApiCall(size, shape, color, clarity, index);
+        prevValuesRef.current = { size, shape, color, clarity };
+      }
+      else {
+        debouncedApiCall.cancel(); // Cancel if not valid or no change
+        setDiamondRateData(prev => {
+          const updated = { ...prev };
+          delete updated[index];
+          return updated;
+        });
+      }
+    }
+    else {
+      // Handle input clear: cancel API and clear rate
+      debouncedApiCall.cancel();
+      setDiamondRateData(prev => {
+        const updated = { ...prev };
+        delete updated[index];
+        return updated;
+      });
+    }
+  };
+
+  const debouncedApiCall = useRef(
+    debounce((size, shape, color, clarity, index) => {
+      if (!shape || !color || !clarity || !isValidSize(size)) {
+        console.log('1');
+        return;
+      }
+
+      fetchDiamondRate({ size, color, shape, clarity, index });
+    }, 600)
+  ).current;
+
+  const calculateTotalAmount = (ratePerCts: string, discount: string) => {
+    const rate = parseFloat(ratePerCts) || 0;
+    const disc = parseFloat(discount) || 0;
+    const discountedRate = rate - (rate * disc / 100);
+    return (discountedRate).toFixed(2);
+  };
+
 
   const renderDiamondBlock = (diamond: DiamondDetails, index: number, blockIndex: number, type: 'center' | 'side') => (
     <View
@@ -132,8 +241,7 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
           title="Rate per cts"
           placeholder="Enter rate"
           onChangeText={text => handleUpdateDiamond(index, { ...diamond, ratePerCts: text })}
-          value={"0"}
-          keyboardType="numeric"
+          value={diamond.ratePerCts ? formatNumberWithCommas(String(diamond.ratePerCts)) : '0'}
           flag={true}
           editable={false}
           wrapperStyle={{ flex: 0.5, marginRight: AppDimension.SPACING_X_10 }}
@@ -154,7 +262,7 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
           Total Diamond Cost
         </Text>
         <Text style={styles.text}>
-          ₹{diamond.totalAmount || '0'}
+          ₹{formatNumberWithCommas(String(diamond.totalAmount)) || '0'}
         </Text>
       </View>
     </View>
@@ -163,6 +271,7 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
   return (
     <View style={[globalStyles.mainContainer]}>
       <Header name={'Diamond Details'} navigation={navigation} />
+      {loader && <Loader />}
       <ScrollView style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 8, marginBottom: 16 }}>
 
         {/* Center diamonds */}

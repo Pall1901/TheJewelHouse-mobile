@@ -1,5 +1,5 @@
 import { ScrollView, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { QuotationForm, QuotationSummary } from '../../../utils/types';
 import globalStyles from '../../../theme/globalStyles';
 import Header from '../../../components/Header';
@@ -20,26 +20,38 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
   const navigation = useNavigation();
   console.log(quotationForm, 'data in QuotationSummarySection');
 
-  quotationForm.quotationSummary.goldCost = quotationForm.goldDetails.totalGoldCost;
-  quotationForm.quotationSummary.labourCost = quotationForm.goldDetails.totalLabourPrice;
+  // Calculate costs
+  const goldCost = parseFloat(quotationForm.goldDetails.totalGoldCost) || 0;
+  const labourCost = parseFloat(quotationForm.goldDetails.totalLabourPrice) || 0;
+  const diamondCost = quotationForm.diamondDetails.reduce(
+    (sum, diamond) => sum + parseFloat(diamond.totalAmount || '0'),
+    0
+  );
 
-  const diamondDetailsLength = quotationForm.diamondDetails.length;
+  const total = goldCost + labourCost + diamondCost;
+  const gst = +(total * 0.03).toFixed(2);
+  const finalTotal = total + gst;
 
-  if (diamondDetailsLength > 0) {
-    let total = 0;
-    for (const diamond of quotationForm.diamondDetails) {
-      total += parseFloat(diamond.totalAmount || '0');
-    }
-    quotationForm.quotationSummary.diamondCost = total.toFixed(2);
-  } else {
-    quotationForm.quotationSummary.diamondCost = '0.00';
-  }
-  const total = parseFloat(quotationForm.quotationSummary.goldCost) +
-    parseFloat(quotationForm.quotationSummary.labourCost) +
-    parseFloat(quotationForm.quotationSummary.diamondCost);
+  // For display
+  const displayGoldCost = formatNumberWithCommas(goldCost.toFixed(2));
+  const displayLabourCost = formatNumberWithCommas(labourCost.toFixed(2));
+  const displayDiamondCost = formatNumberWithCommas(diamondCost.toFixed(2));
+  const displayTotal = formatNumberWithCommas(total.toFixed(2));
+  const displayGst = formatNumberWithCommas(gst.toFixed(2));
+  const displayFinalTotal = formatNumberWithCommas(finalTotal.toFixed(2));
 
-  quotationForm.quotationSummary.gst = formatNumberWithCommas((total * 0.03).toFixed(2));
-  quotationForm.quotationSummary.total = formatNumberWithCommas((total + parseFloat(quotationForm.quotationSummary.gst)).toFixed(2));
+  useEffect(() => {
+    onChange({
+      quotationSummary: {
+        goldCost: goldCost.toFixed(2),
+        labourCost: labourCost.toFixed(2),
+        diamondCost: diamondCost.toFixed(2),
+        total: total.toFixed(2),
+        gst: gst.toFixed(2),
+        finalTotal: finalTotal.toFixed(2),
+      }
+    });
+  }, [goldCost, labourCost, diamondCost, total, gst, finalTotal]);
 
 
   return (
@@ -54,10 +66,10 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
           </View>
 
           {[
-            { label: 'Gold Cost', value: formatNumberWithCommas(quotationForm.quotationSummary.goldCost) },
-            { label: 'Labour Cost', value: formatNumberWithCommas(quotationForm.quotationSummary.labourCost) },
-            { label: 'Diamond Cost', value: formatNumberWithCommas(quotationForm.quotationSummary.diamondCost) },
-            { label: 'Total', value: formatNumberWithCommas(total.toFixed(2)) },
+            { label: 'Gold Cost', value: displayGoldCost },
+            { label: 'Labour Cost', value: displayLabourCost },
+            { label: 'Diamond Cost', value: displayDiamondCost },
+            { label: 'Total', value: displayTotal },
           ].map((item, idx) => (
             <View
               key={idx}
@@ -78,7 +90,7 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
           </View>
           <View style={{ ...styles.row, justifyContent: 'space-between', marginVertical: 4 }}>
             <Text style={[styles.text, styles.finalLabel]}>GST (3%)</Text>
-            <Text style={styles.text}>₹ {quotationForm.quotationSummary.gst}</Text>
+            <Text style={styles.text}>₹ {displayGst}</Text>
           </View>
         </View>
 
@@ -90,7 +102,7 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
           <View style={{ ...styles.row, justifyContent: 'space-between', marginTop: 8 }}>
             <Text style={[styles.text, styles.finalLabel]}>Total</Text>
             <Text style={[styles.text, styles.finalAmount]}>
-              ₹ {quotationForm.quotationSummary.total}
+              ₹ {displayFinalTotal}
             </Text>
           </View>
         </View>
@@ -122,7 +134,7 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
             })
           }
           value={quotationForm.clientDetails.contactNumber}
-          keyboardType="numeric">
+          keyboardType="number-pad">
         </TextInputComponent>
 
         <ButtonComponent
@@ -137,7 +149,7 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
               showAlert('Client phone number is required');
               return;
             }
-            
+
             onSubmit();
           }}
         />

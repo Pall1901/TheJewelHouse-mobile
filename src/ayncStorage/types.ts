@@ -13,4 +13,8 @@ export interface UserContextType {
   loader: boolean;
   setLoader: React.Dispatch<React.SetStateAction<boolean>>;
   setUser: React.Dispatch<React.SetStateAction<UserType | null>>;
+  goldRateData: any;
+  setGoldRateData: (val: any) => void;
+  dropdown: any;
+  setDropdown: (val: any) => void;
 }

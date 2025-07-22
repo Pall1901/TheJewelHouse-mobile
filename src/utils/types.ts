@@ -22,7 +22,6 @@ export interface DiamondDetails {
   size: string;
   color: string;
   clarity: string;
-  weight: string;
   ratePerCts: string;
   discount: string;
   totalAmount: string;
@@ -34,6 +33,7 @@ export interface QuotationSummary {
   diamondCost: string;
   gst: string;
   total: string;
+  finalTotal : string;
 }
 
 export interface QuotationForm {

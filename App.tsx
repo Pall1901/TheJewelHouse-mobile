@@ -6,9 +6,11 @@ import AppColor from './src/app-res/AppColor';
 import GeneralStatusBarColor from './src/components/StatusBarComponent/GeneralStatusBarColor';
 import MainView from './src/navigation/MainView';
 import { OperatingSystemType } from './src/utils/enums';
+import { useGoldRateAPI } from './src/screens/QuotationFormScreen/Hook/useGoldRateAPI';
 
 
 function App() {
+
   
    useEffect(() => {
     setTimeout(() => {

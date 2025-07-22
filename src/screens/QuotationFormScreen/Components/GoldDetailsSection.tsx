@@ -10,6 +10,9 @@ import { GoldColor, GoldPurity } from '../../../utils/enums';
 import { GoldDetails } from '../../../utils/types';
 import { styles } from '../styles';
 import GoldColorSelector from './GoldColorSelector';
+import { useGoldRateAPI } from '../Hook/useGoldRateAPI';
+import { useUser } from '../../../ayncStorage/UserContext';
+import { formatNumberWithCommas } from '../../../utils/Helper';
 
 interface Props {
   data: GoldDetails;
@@ -30,22 +33,30 @@ export const goldPurityOptions = [
 
 const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
   const navigation = useNavigation();
-  const [selected, setSelected] = useState<GoldPurity>(data.goldPurity as GoldPurity ||GoldPurity.GOLD_14);
+  const [selected, setSelected] = useState<GoldPurity>(data.goldPurity as GoldPurity || GoldPurity.GOLD_14);
   const [color, setColor] = useState<GoldColor>(data.goldColor as GoldColor || GoldColor.YELLOW);
-  
-// Rates
-  const currentRatePerGram = selected === GoldPurity.GOLD_14 ? 5766 : 6766;
 
+ const { goldRateData } = useUser();
+
+
+  // Rates
+  const currentRatePerGram = goldRateData
+    ? Number(
+      parseFloat(
+        selected === GoldPurity.GOLD_14
+          ? goldRateData.price_gram_14k
+          : goldRateData.price_gram_18k
+      ).toFixed(2)
+    )
+
+    : 0;
   const parsedWeight = parseFloat(data.weight) || 0;
   const parsedLabourCost = parseFloat(data.labourCost) || 0;
 
   const computedTotalGoldCost = parsedWeight ? (parsedWeight * currentRatePerGram).toFixed(2) : '0';
   const computedTotalLabourPrice = parsedWeight && parsedLabourCost ? (parsedWeight * parsedLabourCost).toFixed(2) : '0';
 
-
-  console.log(selected, color);
-
-    useEffect(() => {
+  useEffect(() => {
     onChange({
       ...data,
       goldPurity: selected,
@@ -68,7 +79,7 @@ const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
             Today's Gold Price
           </Text>
           <Text style={styles.header}>
-             ₹{currentRatePerGram} /gram
+            ₹{currentRatePerGram} /gram
           </Text>
         </View>
 
@@ -102,7 +113,7 @@ const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
             Total Gold Cost
           </Text>
           <Text style={styles.text}>
-            ₹{computedTotalGoldCost}
+            ₹{formatNumberWithCommas(computedTotalGoldCost)}
           </Text>
         </View>
 
@@ -117,10 +128,10 @@ const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
 
         <View style={styles.totalPriceView}>
           <Text style={styles.text}>
-            Total Gold Cost
+            Total Labour Cost
           </Text>
           <Text style={styles.text}>
-            ₹{computedTotalLabourPrice}
+            ₹{formatNumberWithCommas(computedTotalLabourPrice)}
           </Text>
         </View>
 

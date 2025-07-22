@@ -85,8 +85,6 @@ const TextInputComponent = ({
     color: AppColor.generalGrey,
   };
 
-
-
   return (
     <View style={[{ marginBottom: AppDimension.SPACING_Y_10 }, wrapperStyle]}>
        <Text style={styles.title}>{title}</Text>

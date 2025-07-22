@@ -18,8 +18,6 @@ export const styles = StyleSheet.create({
     },
     textInput: {
       flex: 1,
-      //marginTop: AppDimension.SPACING_Y_10,
-      //justifyContent: 'flex-end',
       height: AppDimension.SPACING_Y_55,
       borderRadius: AppDimension.SPACING_X_10,
       color: AppColor.grey,
@@ -41,8 +39,10 @@ export const styles = StyleSheet.create({
     textInput1: {
       backgroundColor : AppColor.greyLighter,
       height: AppDimension.SPACING_Y_48,
+       paddingEnd: 0, 
     },
     textMargin: {
+       paddingEnd: 0,
       //height: AppDimension.SPACING_Y_100,
       //marginTop: AppDimension.SPACING_Y_20,
     },
