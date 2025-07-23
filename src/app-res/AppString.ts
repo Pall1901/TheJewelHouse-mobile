@@ -224,6 +224,13 @@ For day-ahead trading, Kindly place your orders before 5:00 PM.`,
   OnBoardingDetailScreen: {
     header: 'User Onboarding',
   },
+  QuotationScreen: {
+    verification: {
+      icon: 'checkmark-circle',
+      title: 'Quotation Created Successfully.',
+      description: 'PDF saved to Downloads folder! You can share PDF now.',
+    },
+  },
   PasswordScreen: {
     verification: {
       icon: 'checkmark-circle',

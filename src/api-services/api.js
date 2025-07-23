@@ -27,4 +27,17 @@ export const getDiamondRate = (params = '', requestBody) =>
     url: routes.GET_DIMOND_RATE.URL + params,
     data: requestBody,
   });
+export const createQuotation = (requestBody) =>
+  apiClient({
+    method: routes.CREATE_QUOTATION.METHOD,
+    url: routes.CREATE_QUOTATION.URL,
+    data: requestBody,
+  });
+
+  export const getQuotationHistoryList = (params = '', requestBody) =>
+  apiClient({
+    method: routes.GET_QUOTATION_HISTORY.METHOD,
+    url: routes.GET_QUOTATION_HISTORY.URL + params,
+    data: requestBody,
+  });
 

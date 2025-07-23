@@ -22,6 +22,14 @@ export const routes = {
         METHOD: AppConstants.API_METHOD.GET,
         URL: PROD_BASE_URL+'diamonds/price',
     },
+     CREATE_QUOTATION: {
+        METHOD: AppConstants.API_METHOD.POST,
+        URL: PROD_BASE_URL+'quotation/submit',
+    },
+    GET_QUOTATION_HISTORY: {
+        METHOD: AppConstants.API_METHOD.GET,
+        URL: PROD_BASE_URL+'quotation/',
+    },
   
 };
 

@@ -271,7 +271,6 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
   return (
     <View style={[globalStyles.mainContainer]}>
       <Header name={'Diamond Details'} navigation={navigation} />
-      {loader && <Loader />}
       <ScrollView style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 8, marginBottom: 16 }}>
 
         {/* Center diamonds */}

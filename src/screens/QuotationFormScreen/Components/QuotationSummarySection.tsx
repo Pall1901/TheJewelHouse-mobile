@@ -8,6 +8,7 @@ import { styles } from '../styles';
 import { formatNumberWithCommas, showAlert } from '../../../utils/Helper';
 import TextInputComponent from '../../../components/TextInputComponent';
 import ButtonComponent from '../../../components/ButtonComponent';
+import Loader from '../../../components/Loader/Loader';
 
 interface Props {
   quotationForm: QuotationForm;
@@ -18,8 +19,6 @@ interface Props {
 
 const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChange, onSubmit }) => {
   const navigation = useNavigation();
-  console.log(quotationForm, 'data in QuotationSummarySection');
-
   // Calculate costs
   const goldCost = parseFloat(quotationForm.goldDetails.totalGoldCost) || 0;
   const labourCost = parseFloat(quotationForm.goldDetails.totalLabourPrice) || 0;
@@ -56,8 +55,9 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
 
   return (
     <View style={[globalStyles.mainContainer]}>
-      <Header name="Quotation Summary" navigation={navigation} />
 
+      <Header name="Quotation Summary" navigation={navigation} />
+      
       <ScrollView style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 8 }}>
         {/* Cost Breakdown Section */}
         <View style={styles.card}>

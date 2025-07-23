@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { PermissionsAndroid, Platform, StyleSheet, View } from 'react-native';
 import RNBootSplash from 'react-native-bootsplash';
 import { SafeAreaProvider, SafeAreaView, SafeAreaView as SafeView } from 'react-native-safe-area-context';
 import AppColor from './src/app-res/AppColor';
@@ -11,8 +11,7 @@ import { useGoldRateAPI } from './src/screens/QuotationFormScreen/Hook/useGoldRa
 
 function App() {
 
-  
-   useEffect(() => {
+  useEffect(() => {
     setTimeout(() => {
       RNBootSplash.hide({ fade: true });
     }, 1000);
@@ -25,13 +24,13 @@ function App() {
           barStyle="light-content" />
 
         {Platform.OS === OperatingSystemType.IOS ? (
-          <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}><MainView/></SafeAreaView>
+          <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}><MainView /></SafeAreaView>
         ) : (
-          <SafeView style={{ flex: 1 }}><MainView/></SafeView>
+          <SafeView style={{ flex: 1 }}><MainView /></SafeView>
         )}
       </View>
     </SafeAreaProvider>
-  
+
   );
 }
 
