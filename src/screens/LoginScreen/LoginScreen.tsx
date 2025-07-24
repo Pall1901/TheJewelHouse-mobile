@@ -37,7 +37,7 @@ const LoginScreen = (props: LoginProps) => {
   const { loginCheck } = useLogin(props.navigation);
 
   const login = (values: any) => {
-   // props.navigation.navigate(ScreenName.HOME_SCREEN)
+    // props.navigation.navigate(ScreenName.HOME_SCREEN)
     loginCheck(values);
   };
 
@@ -45,19 +45,20 @@ const LoginScreen = (props: LoginProps) => {
     <ImageBackground
       source={AppImages.loginBg}
       style={{ flex: 1 }}
+      onError={(e) => console.log('Image load error:', e.nativeEvent)}
       resizeMode='stretch'>
       <View style={styles.container}>
         {loader && <Loader />}
-          <Image
-            source={AppImages.logo}
-            resizeMode='contain'
-            style={styles.image}
-            accessible={true}
-            testID={`loginScreen-image`}
-            accessibilityLabel={`loginScreen-image`}
-          />
-        
-       
+        <Image
+          source={AppImages.logo}
+          resizeMode='contain'
+          style={styles.image}
+          accessible={true}
+          testID={`loginScreen-image`}
+          accessibilityLabel={`loginScreen-image`}
+        />
+
+
         <KeyboardAvoidingViewComponent>
           <View style={{ alignItems: 'center' }}>
             <View style={styles.view}>
@@ -92,7 +93,7 @@ const LoginScreen = (props: LoginProps) => {
                   dirty
                 }) => (
                   <>
-                   
+
 
                     <TextInputComponent
                       title="Mobile No"
@@ -132,12 +133,12 @@ const LoginScreen = (props: LoginProps) => {
                       />
                     </TextInputComponent>
 
-                   
+
 
                     <View style={styles.loginButton}>
                       <ButtonComponent
                         title={AppString.loginScreen.login}
-                                              
+
                         onPress={() => {
                           handleSubmit();
                         }}
@@ -150,7 +151,7 @@ const LoginScreen = (props: LoginProps) => {
             </View>
           </View>
         </KeyboardAvoidingViewComponent>
-        
+
       </View>
     </ImageBackground>
   );

@@ -17,7 +17,7 @@ type QuotationItemCardProps = {
 const QuotationItemCard = ({ item, navigation }: QuotationItemCardProps) => {
 
     const handlePress = () => {
-        //navigation.navigate(ScreenName.)
+        navigation.navigate(ScreenName.ORDERS_FORM_SCREEN, item = {item})
     };
     const { clientDetails, quotationSummary, date } = item;
     const formattedDate = new Date(date).toLocaleDateString();

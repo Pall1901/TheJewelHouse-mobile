@@ -1,6 +1,4 @@
 const AppImages = {
-   
-   loader : 'https://p2p-mobile-image-bucket.s3.us-west-2.amazonaws.com/loader.gif',
    logo : require('../../assets/bootsplash/logo.png'),
    loginLogo : require('../../assets/images/logo1.png'),
    loginBg : require('../../assets/images/login_bg.jpg'),

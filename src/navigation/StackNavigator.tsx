@@ -14,6 +14,8 @@ import QuotationScreen from '../screens/QuotationScreen/QuotationScreen';
 import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
 import OrdersScreen from '../screens/OrdersScreen/OrdersScreen';
 import QuotationFormScreen from '../screens/QuotationFormScreen/QuotationFormScreen';
+import OrderFormScreen from '../screens/OrderFormScreen/OrderFormScreen';
+import OrdersFormScreen from '../screens/OrdersFormScreen/OrdersFormScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -45,7 +47,11 @@ const MainStackNavigator = ({
       <Stack.Screen
         name={ScreenName.QUOTATION_FORM_SCREEN}
         component={QuotationFormScreen}
-        options={{ headerShown: false }}/>
+        options={{ headerShown: false }} />
+      <Stack.Screen
+        name={ScreenName.ORDERS_FORM_SCREEN}
+        component={OrdersFormScreen}
+        options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
@@ -56,7 +62,7 @@ const AuthStackNavigator = ({
 }: {
   initialRouteName: keyof RootStackParamList;
 }) => {
-  
+
   return (
     <Stack.Navigator
       screenOptions={screenOptionStyleNoHeader}

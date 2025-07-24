@@ -6,6 +6,7 @@ export type RootStackParamList = {
   [ScreenName.HOME_SCREEN]: undefined;
   [ScreenName.LOGIN_SCREEN]: undefined;
   [ScreenName.QUOTATION_FORM_SCREEN]: undefined;
+  [ScreenName.ORDERS_FORM_SCREEN]: undefined;
 };
 
 
