@@ -19,7 +19,7 @@ console.log('API Base URL:', PROD_BASE_URL);
 // Request interceptor
 apiClient.interceptors.request.use(
   async (config) => {
-   printErrorLog('Request config ===>', config);
+   //printErrorLog('Request config ===>', config);
 
     const requestKey = `${config.method}_${config.url}`;
     

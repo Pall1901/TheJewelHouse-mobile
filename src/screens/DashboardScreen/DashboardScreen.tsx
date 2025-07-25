@@ -16,19 +16,28 @@ type DashboardProps = {
 };
 
 const DashboardScreen = (props: DashboardProps) => {
-  const {loader} = useUser();
+  const { loader } = useUser();
+
   useEffect(() => {
-    DeviceEventEmitter.addListener("event.orderSubmitted", (eventData) => onSuccess(eventData));
+    DeviceEventEmitter.addListener("event.orderSubmitted", (eventData) => onSuccessQuotation(eventData));
+    DeviceEventEmitter.addListener("event.orderPlaced", (eventData) => onSuccessOrder(eventData));
     return () => {
-      DeviceEventEmitter.removeAllListeners("event.orderSubmitted")
+      DeviceEventEmitter.removeAllListeners("event.orderSubmitted");
+      DeviceEventEmitter.removeAllListeners("event.orderPlaced");
     };
   }, []);
 
-   const onSuccess = (eventData: any) => {
+  const onSuccessQuotation = (eventData: any) => {
     if (eventData?.submit) {
       props.navigation.navigate(TabScreen.QUOTATION);
     }
-  }
+  };
+
+  const onSuccessOrder = (eventData: any) => {
+    if (eventData?.submit) {
+      props.navigation.navigate(TabScreen.ORDERS);
+    }
+  };
 
 
   return (

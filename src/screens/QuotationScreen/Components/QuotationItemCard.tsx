@@ -5,8 +5,6 @@ import AppDimension from '../../../app-res/AppDimension';
 import AppFontFamily from '../../../app-res/AppFontFamily';
 import AppFontSize from '../../../app-res/AppFontSize';
 import ButtonComponent from '../../../components/ButtonComponent';
-import { parseFloatNumber } from '../../../utils/Helper';
-import { QuotationForm } from '../../../utils/types';
 import { ScreenName } from '../../../utils/enums';
 
 type QuotationItemCardProps = {
@@ -17,7 +15,7 @@ type QuotationItemCardProps = {
 const QuotationItemCard = ({ item, navigation }: QuotationItemCardProps) => {
 
     const handlePress = () => {
-        //navigation.navigate(ScreenName.)
+       navigation.navigate(ScreenName.ORDER_FORM_SCREEN, { item: item });
     };
     const { clientDetails, quotationSummary, date } = item;
     const formattedDate = new Date(date).toLocaleDateString();

@@ -43,15 +43,15 @@ const QuotationScreen = (props: QuotationsProps) => {
           renderItem={renderItem}
           keyExtractor={(item) => item._id}
 
-          // onEndReached={() => {
-          //   if (hasMore && !loading) {
-          //     getQuotationList();
-          //   }
-          // }}
-          // onEndReachedThreshold={0.5}
-          // onRefresh={() => getQuotationList(true)} // 🔧 added pull-to-refresh
-          // refreshing={loading}
-          // ListFooterComponent={loading && hasMore ? <ActivityIndicator style={{ margin: 10 }} /> : null}
+          onEndReached={() => {
+            if (hasMore && !loading) {
+              getQuotationList();
+            }
+          }}
+          onEndReachedThreshold={0.5}
+          onRefresh={() => getQuotationList(true)} // 🔧 added pull-to-refresh
+          refreshing={loading}
+          ListFooterComponent={loading && hasMore ? <ActivityIndicator style={{ margin: 10 }} /> : null}
           ListEmptyComponent={() => (
 
             <View style={styles.errorView}>

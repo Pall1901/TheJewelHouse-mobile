@@ -149,7 +149,7 @@ const TextInputComponent = ({
             testID={tID(`${screen}-icon-${iconType}`)}
             accessibilityLabel={`${screen}-icon-${iconType}`}
             onPress={onPress}>
-            <Icon type={iconType} size={25} name={iconVisible} color={AppColor.grey2} />
+            <Icon type={iconType} size={25} name={iconVisible} color={AppColor.primary} />
           </Pressable>
 
 

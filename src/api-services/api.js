@@ -41,3 +41,10 @@ export const createQuotation = (requestBody) =>
     data: requestBody,
   });
 
+  export const createOrder = (requestBody) =>
+  apiClient({
+    method: routes.CREATE_ORDER.METHOD,
+    url: routes.CREATE_ORDER.URL,
+    data: requestBody,
+  });
+

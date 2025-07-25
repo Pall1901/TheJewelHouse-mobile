@@ -49,6 +49,7 @@ export enum ScreenName {
   HOME_SCREEN = 'HomeScreen',
   LOGIN_SCREEN = 'LoginScreen',
   QUOTATION_FORM_SCREEN = 'QuotationFormScreen',
+  ORDER_FORM_SCREEN = 'OrderFormScreen',
 }
 
 export enum GoldPurity {

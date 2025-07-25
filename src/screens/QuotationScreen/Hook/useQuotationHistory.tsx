@@ -22,66 +22,44 @@ const useQuotationHistory = (): useQuotationHistoryReturnType => {
         getQuotationListHandler(isRefresh)
     };
 
+   
+
     const getQuotationListHandler = async (isRefresh = false) => {
-        setLoader(true)
-        const query = `${user?.id}`;
+
+        if (loading || (!hasMore && !isRefresh)) return;
+
+        if (isRefresh) {
+            setPage(1);
+            setHasMore(true);
+            setQuotationList([]);
+        }
+
+        const nextPage = isRefresh ? 1 : page;
+        const query = `${user?.id}?page=${nextPage}&items_per_page=10`;
         
+        setLoading(true);
+        //if (nextPage === 1) setLoader(true);
+
         try {
             const res = await getQuotationHistoryList(query);
             const { data = {} } = res;
 
             if (data?.code === HttpStatusCode.OK) {                
                 const newData = data.data || [];
-                setQuotationList(newData);
                 
+                setQuotationList(prev => (nextPage === 1 ? newData : [...(prev || []), ...newData]));
+                setPage(nextPage + 1);
+                if (newData.length < 10) setHasMore(false);
             } else {
                 showToastMessage(data.message, 'danger');
             }
         } catch (error: any) {
             showToastMessage(error.message, 'danger');
         } finally {
-            setLoader(false);
+            setLoading(false);
         }
 
     };
-
-    // const getQuotationListHandler = async (isRefresh = false) => {
-
-    //     if (loading || (!hasMore && !isRefresh)) return;
-
-    //     if (isRefresh) {
-    //         setPage(1);
-    //         setHasMore(true);
-    //         setQuotationList([]);
-    //     }
-
-    //     const nextPage = isRefresh ? 1 : page;
-    //     const query = `${user?.id}?page=${nextPage}&items_per_page=10`;
-    //     console.log(query,'query');
-        
-    //     setLoading(true);
-    //     //if (nextPage === 1) setLoader(true);
-
-    //     try {
-    //         const res = await getQuotationHistoryList(query);
-    //         const { data = {} } = res;
-
-    //         if (data?.code === HttpStatusCode.OK) {                
-    //             const newData = data.data || [];
-    //             setQuotationList(prev => (nextPage === 1 ? newData : [...(prev || []), ...newData]));
-    //             setPage(nextPage + 1);
-    //             if (newData.length < 10) setHasMore(false);
-    //         } else {
-    //             showToastMessage(data.message, 'danger');
-    //         }
-    //     } catch (error: any) {
-    //         showToastMessage(error.message, 'danger');
-    //     } finally {
-    //         setLoading(false);
-    //         //setLoader(false);
-    //     }
-
-    // };
 
    
 
