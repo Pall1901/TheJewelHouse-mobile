@@ -1,4 +1,4 @@
-
+import { PROD_BASE_URL } from '@env';
 import { Keyboard } from 'react-native';
 import { useUser } from '../../../ayncStorage/UserContext';
 import { checkInternet, showToastMessage } from '../../../utils/Helper';
@@ -11,13 +11,13 @@ import RNFS from 'react-native-fs';
 
 type UseQuotationReturnType = {
     fetchDiamondRate: (size: any, color: any, shape: any, clarity: any, index: any) => void
-    submitQuotation: (values: any) => void;
+    submitQuotation: (values: any, openModal : any) => void;
     downloadResult: DownloadResult | null
     downloadPath : any
 };
 
 
-const useQuotationAPI = (onRateData: (index: number, rateData: any) => void, openModal: any,): UseQuotationReturnType => {
+const useQuotationAPI = (onRateData: (index: number, rateData: any) => void): UseQuotationReturnType => {
     const { setLoader, user } = useUser();
     const [downloadResult, setDownloadResult] = useState<DownloadResult | null>(null);
     const [downloadPath, setDownloadPath] = useState('')
@@ -64,22 +64,23 @@ const useQuotationAPI = (onRateData: (index: number, rateData: any) => void, ope
         }
     };
 
-    const submitQuotation = (values: QuotationForm) => {
+    const submitQuotation = (values: QuotationForm, openModal : () => void, imageUrl : string) => {
         setLoader(false);
         const checkInternetStatus = async () => {
             const isConnected = await checkInternet()
             if (isConnected) {
-                createQuotationHandler(values);
+                createQuotationHandler(values, openModal, imageUrl);
             }
         };
         checkInternetStatus()
     };
 
-    const createQuotationHandler = async (values: QuotationForm) => {
+    const createQuotationHandler = async (values: QuotationForm, openModal : any, imageUrl : string) => {
 
         let datas = {
             userId: user?.id,
             date: formattedDate,
+            image_url : imageUrl,
             ...values
         };
         console.log(datas, 'datas');
@@ -92,7 +93,7 @@ const useQuotationAPI = (onRateData: (index: number, rateData: any) => void, ope
             if (data?.code == HttpStatusCode.Created) {
                 console.log(data.data.pdfUrl);
                 //setPdfUrl(data.data.pdfUrl)
-                const url = `http://62.72.33.172:4000${data.data.pdfUrl}`
+                const url = `${PROD_BASE_URL}${data.data.pdfUrl}`
                 const baseName = (url.split('/').pop() || 'quotation').replace('.pdf', '');
                 const uniqueName = `${baseName}_${Date.now()}.pdf`;
                 const downloadPath = `${RNFS.DownloadDirectoryPath}/${uniqueName}`;

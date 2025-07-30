@@ -22,7 +22,6 @@ const DropdownModal = (props: ModalProps) => {
           margin: 0,
           justifyContent: 'flex-end'
         }}
-        testID='gotoTrading-model'
       >
         <ActionSheet
           actionItems={props.actionItems}

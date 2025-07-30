@@ -13,6 +13,7 @@ import GoldColorSelector from './GoldColorSelector';
 import { useGoldRateAPI } from '../Hook/useGoldRateAPI';
 import { useUser } from '../../../ayncStorage/UserContext';
 import { formatNumberWithCommas } from '../../../utils/Helper';
+import AppDimension from '../../../app-res/AppDimension';
 
 interface Props {
   data: GoldDetails;
@@ -108,7 +109,7 @@ const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
           keyboardType="numeric">
         </TextInputComponent>
 
-        <View style={styles.totalPriceView}>
+        <View style={{...styles.totalPriceView,paddingVertical:AppDimension.SPACING_Y_16}}>
           <Text style={styles.text}>
             Total Gold Cost
           </Text>
@@ -126,7 +127,7 @@ const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
         </TextInputComponent>
 
 
-        <View style={styles.totalPriceView}>
+        <View style={{...styles.totalPriceView,paddingVertical:AppDimension.SPACING_Y_16,marginTop: AppDimension.SPACING_Y_10}}>
           <Text style={styles.text}>
             Total Labour Cost
           </Text>

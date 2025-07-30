@@ -26,17 +26,19 @@ export const styles = StyleSheet.create({
     },
     totalPriceView: {
         backgroundColor: AppColor.greyLighter,
-        borderRadius: 12,
-        padding: 12,
+        borderRadius: AppDimension.SPACING_X_10,
+        paddingHorizontal :AppDimension.SPACING_X_16,
+        paddingVertical: AppDimension.SPACING_Y_10,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginVertical: 16,
+        marginBottom: AppDimension.SPACING_X_10,
     },
     text: {
-        fontSize: AppFontSize.FONT_SIZE_18,
+        fontSize: AppFontSize.FONT_SIZE_16,
         color: AppColor.black,
         fontFamily: AppFontFamily.ManropeBold,
+        width : '60%'
     },
     row: {
         flex: 1,

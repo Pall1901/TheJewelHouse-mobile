@@ -22,9 +22,9 @@ interface Props {
   onNext: () => void;
 }
 
-const discount = Array.from({ length: 10 }, (_, i) => ({
-  value: `${i + 1}`,
-  name: `${i + 1}`,
+const discount = Array.from({ length: 11 }, (_, i) => ({
+  value: `${i}`,
+  name: `${i}`,
 }));
 
 type DropdownItem = {
@@ -86,6 +86,7 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
       clarity: '',
       ratePerCts: '',
       discount: '',
+      ratePerCtsAfterDis: '',
       totalAmount: '',
     };
     onChange([...data, newDiamond]);
@@ -112,18 +113,32 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
   });
 
   const handleUpdateDiamond = (index: number, updatedDiamond: DiamondDetails) => {
-    const { ratePerCts, discount } = updatedDiamond;
-    updatedDiamond.totalAmount =ratePerCts
-    let totalAmount = updatedDiamond.totalAmount;
+    const { ratePerCts, discount, size, shape, color, clarity } = updatedDiamond;
+
+    // Calculate rate per cts after discount
+    let ratePerCtsAfterDis = ratePerCts ? parseFloat(ratePerCts) : 0;
     if (ratePerCts && discount) {
-      totalAmount = calculateTotalAmount(ratePerCts, discount);
+      const disc = parseFloat(discount) || 0;
+      ratePerCtsAfterDis = ratePerCtsAfterDis * (1 - disc / 100);
     }
+    updatedDiamond.ratePerCtsAfterDis = ratePerCtsAfterDis.toFixed(2);
+
+    // Calculate total amount
+    const sizeNum = size ? parseFloat(size) : 0;
+    let totalAmount = ratePerCtsAfterDis * sizeNum;
+    updatedDiamond.totalAmount = totalAmount ? totalAmount.toFixed(2) : '0';
+    // updatedDiamond.totalAmount =ratePerCts
+    // let totalAmount = updatedDiamond.totalAmount;
+
+    // if (ratePerCts && discount) {
+    //   totalAmount = calculateTotalAmount(ratePerCts, discount);
+    // }
 
     const updatedDiamonds = [...data];
-    updatedDiamonds[index] = { ...updatedDiamond, totalAmount };
+    updatedDiamonds[index] = { ...updatedDiamond };
     onChange(updatedDiamonds);
 
-    const { size, shape, color, clarity } = updatedDiamond;
+   
 
     if (shape && color && clarity && isValidSize(size)) {
       const hasChanged =
@@ -171,13 +186,6 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
       fetchDiamondRate({ size, color, shape, clarity, index });
     }, 600)
   ).current;
-
-  const calculateTotalAmount = (ratePerCts: string, discount: string) => {
-    const rate = parseFloat(ratePerCts) || 0;
-    const disc = parseFloat(discount) || 0;
-    const discountedRate = rate - (rate * disc / 100);
-    return (discountedRate).toFixed(2);
-  };
 
 
   const renderDiamondBlock = (diamond: DiamondDetails, index: number, blockIndex: number, type: 'center' | 'side') => (
@@ -256,6 +264,16 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
           title="Discount(%)"
         />
       </View>
+
+      <View style={styles.totalPriceView}>
+        <Text style={styles.text}>
+          Rate per cts after Discount
+        </Text>
+        <Text style={styles.text}>
+          ₹{formatNumberWithCommas(String(diamond.ratePerCtsAfterDis)) || '0'}
+        </Text>
+      </View>
+
 
       <View style={styles.totalPriceView}>
         <Text style={styles.text}>

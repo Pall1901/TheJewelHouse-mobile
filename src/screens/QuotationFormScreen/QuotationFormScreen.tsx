@@ -21,6 +21,7 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
   const [currentStep, setCurrentStep] = useState(1);
   const { loader, setLoader } = useUser();
   const [verificationModalVisible, setVerificationModalVisible] = useState(false)
+  const [imageUrl, setImageUrl] = useState('');
 
   const openModal = useCallback(() => {
     setVerificationModalVisible(true);
@@ -33,7 +34,7 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
     downloadAndSharePDF(downloadResult)
   }, [verificationModalVisible]);
 
-  const { submitQuotation, downloadResult, downloadPath } = useQuotationAPI(navigation, openModal);
+  const { submitQuotation, downloadResult, downloadPath } = useQuotationAPI(navigation);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', (e) => {
@@ -49,7 +50,7 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
   }, [navigation, currentStep]);
 
   const [quotationForm, setQuotationForm] = useState<QuotationForm>({
-    clientDetails: { name: '', contactNumber: '', address: '', email: '' },
+    clientDetails: { name: '', contactNumber: '', address: '', email: '' , city :''},
     goldDetails: {
       goldPurity: '',
       goldColor: '',
@@ -68,7 +69,8 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
         color: '',
         clarity: '',
         ratePerCts: '',
-        discount: '',
+        discount: '0',
+        ratePerCtsAfterDis :'',
         totalAmount: '',
       },
       {
@@ -78,7 +80,8 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
         color: '',
         clarity: '',
         ratePerCts: '',
-        discount: '',
+        discount: '0',
+        ratePerCtsAfterDis :'',
         totalAmount: '',
       },
     ],
@@ -95,15 +98,17 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
       !diamond.totalAmount
     );
   };
+ 
 
   const handleSubmit = () => {
+    
     const filteredDiamondDetails = quotationForm.diamondDetails.filter(diamond => !isDiamondEmpty(diamond));
     const filteredForm = {
       ...quotationForm,
       diamondDetails: filteredDiamondDetails,
     };
     console.log('Submitting to API:', filteredForm);
-    submitQuotation(filteredForm);
+    submitQuotation(filteredForm, openModal, imageUrl);
   };
 
 
@@ -156,6 +161,7 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
             setQuotationForm((prev) => ({ ...prev, ...updated }))
           }
           onSubmit={handleSubmit}
+          setImageUrl = {setImageUrl}
         />
       )}
 

@@ -6,6 +6,7 @@ import AppFontFamily from '../../../app-res/AppFontFamily';
 import AppFontSize from '../../../app-res/AppFontSize';
 import ButtonComponent from '../../../components/ButtonComponent';
 import { ScreenName } from '../../../utils/enums';
+import { formatNumber } from '../../../utils/Helper';
 
 type QuotationItemCardProps = {
     item: any;
@@ -15,7 +16,7 @@ type QuotationItemCardProps = {
 const QuotationItemCard = ({ item, navigation }: QuotationItemCardProps) => {
 
     const handlePress = () => {
-       navigation.navigate(ScreenName.ORDER_FORM_SCREEN, { item: item });
+        navigation.navigate(ScreenName.ORDER_FORM_SCREEN, { item: item });
     };
     const { clientDetails, quotationSummary, date } = item;
     const formattedDate = new Date(date).toLocaleDateString();
@@ -25,52 +26,44 @@ const QuotationItemCard = ({ item, navigation }: QuotationItemCardProps) => {
             <View style={styles.orderCard}>
 
                 <View style={styles.row}>
-                <View style={styles.header}>
-                    <Text style={styles.name}>{clientDetails.name.trim() || 'Client Name'}</Text>
-                    <Text style={styles.contact}>📞 {clientDetails.contactNumber}</Text>
+                    <View style={styles.rowView}>
+                        <Text style={styles.textValue}>{clientDetails.name.trim() || 'Client Name'}</Text>
+                        <View style={styles.view} />
+                        <Text style={styles.textValue}>{clientDetails.contactNumber}</Text>
+                    </View>
+                    <Text style={styles.textValue}>{formattedDate}</Text>
                 </View>
-                <Text style={styles.date}>📅 {formattedDate}</Text>
-                </View>
 
-                <View style={styles.divider} />
-
-                <View style={styles.summary}>
-                    <Text style={styles.summaryTitle}>Quotation Summary:</Text>
-
+                <View style={{ marginTop: 16 }}>
+                    {/* Values row */}
                     <View style={styles.row}>
-                        <Text style={styles.label}>💎 Diamond Cost:</Text>
-                        <Text style={styles.value}>₹{quotationSummary.diamondCost}</Text>
+                        <Text style={styles.value}>₹{formatNumber(quotationSummary.goldCost)}</Text>
+                        <Text style={styles.value}>₹{formatNumber(quotationSummary.labourCost)}</Text>
+                        <Text style={styles.value}>₹{formatNumber(quotationSummary.diamondCost)}</Text>
+                        <Text style={styles.value}>₹{formatNumber(quotationSummary.gst)}</Text>
                     </View>
 
+                    {/* Labels row */}
                     <View style={styles.row}>
-                        <Text style={styles.label}>🪙 Gold Cost:</Text>
-                        <Text style={styles.value}>₹{quotationSummary.goldCost}</Text>
-                    </View>
-
-                    <View style={styles.row}>
-                        <Text style={styles.label}>🛠️ Labour Cost:</Text>
-                        <Text style={styles.value}>₹{quotationSummary.labourCost}</Text>
-                    </View>
-
-                    <View style={styles.row}>
-                        <Text style={styles.label}>🧾 GST:</Text>
-                        <Text style={styles.value}>₹{quotationSummary.gst}</Text>
-                    </View>
-
-                    <View style={styles.row}>
-                        <Text style={[styles.label, styles.totalLabel]}>💰 Total:</Text>
-                        <Text style={[styles.value, styles.totalValue]}>₹{quotationSummary.total}</Text>
+                        <Text style={styles.label}>Gold{'\n'}Cost</Text>
+                        <Text style={styles.label}>Labour{'\n'}Cost</Text>
+                        <Text style={styles.label}>Diamond{'\n'}Cost</Text>
+                        <Text style={styles.label}>GST</Text>
                     </View>
                 </View>
 
+                <View style={{ ...styles.rowView, marginVertical: AppDimension.SPACING_Y_10 }}>
+                    <Text style={styles.totalLabel}>Total Price: </Text>
+                    <Text style={styles.totalValue}>₹{formatNumber(quotationSummary.total)}</Text>
+                </View>
 
-                <ButtonComponent
-                    title={'Place Order'}
-                    onPress={handlePress}
-                    style={styles.tradeButton}
-                    textStyle={styles.tradeButtonText}
-                />
-
+                <View style={{ alignItems: 'center' }}>
+                    <ButtonComponent
+                        title={'Place Order'}
+                        onPress={handlePress}
+                        textStyle={styles.tradeButtonText}
+                    />
+                </View>
             </View>
         </View>
     );
@@ -86,8 +79,8 @@ const styles = StyleSheet.create({
     orderCard: {
         backgroundColor: AppColor.white,
         borderRadius: 12,
-        padding: AppDimension.SPACING_X_12,
-        borderWidth:0.5,
+        padding: AppDimension.SPACING_X_10,
+        borderWidth: 0.5,
         borderColor: AppColor.primary,
         shadowColor: '#000',
         shadowOffset: {
@@ -99,105 +92,69 @@ const styles = StyleSheet.create({
         elevation: 3,
         marginBottom: AppDimension.SPACING_Y_04,
     },
+    row: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        // marginBottom: AppDimension.SPACING_Y_05,
+    },
     rowView: {
         flexDirection: 'row',
         marginBottom: AppDimension.SPACING_Y_04,
-    },
-    // row: {
-    //     flexDirection: 'row',
-    //     justifyContent: 'space-between',
-    //     marginBottom: AppDimension.SPACING_Y_08,
-    // },
-    item: {
-        flex: 1,
-        alignItems: 'flex-start',
-    },
-    textLabel: {
-        fontSize: AppFontSize.FONT_SIZE_12,
-        fontFamily: AppFontFamily.ManropeRegular,
-        textAlignVertical: 'center',
-        marginRight: AppDimension.SPACING_X_05,
-        color: '#666',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     textValue: {
         fontSize: AppFontSize.FONT_SIZE_14,
         fontFamily: AppFontFamily.ManropeBold,
-        color: AppColor.primaryText || '#333',
+        color: AppColor.greyText,
     },
-    tradeButton: {
-        marginTop: AppDimension.SPACING_Y_03,
-        backgroundColor: AppColor.primary,
-        paddingVertical: AppDimension.SPACING_Y_05,
-        borderRadius: 8,
-        alignItems: 'center',
+    view: {
+        backgroundColor: AppColor.greyText,
+        width: AppDimension.SPACING_X_01,
+        height: 14,
+        marginHorizontal: AppDimension.SPACING_X_04,
+        marginTop: AppDimension.SPACING_X_03,
+        alignContent: 'center',
+        alignSelf: 'center'
     },
+
+    label: {
+        flex: 1,
+        fontSize: AppFontSize.FONT_SIZE_15,
+        fontFamily: AppFontFamily.ManropeBold,
+        color: AppColor.grey71,
+        textAlign: 'center',
+
+    },
+    value: {
+        flex: 1,
+        fontSize: AppFontSize.FONT_SIZE_14,
+        fontFamily: AppFontFamily.ManropeExtraBold,
+        color: AppColor.black,
+        textAlign: 'center',
+    },
+
+    totalLabel: {
+        fontSize: AppFontSize.FONT_SIZE_16,
+        fontFamily: AppFontFamily.ManropeExtraBold,
+        color: AppColor.black,
+        textAlign: 'center',
+    },
+    totalValue: {
+        fontSize: AppFontSize.FONT_SIZE_16,
+        fontFamily: AppFontFamily.ManropeExtraBold,
+        color: AppColor.black,
+        textAlign: 'center',
+    },
+
     tradeButtonText: {
         color: AppColor.white,
         fontFamily: AppFontFamily.ManropeBold,
         fontSize: AppFontSize.FONT_SIZE_16,
     },
-    statusBadge: {
-        paddingHorizontal: 10,
-        paddingVertical: 2,
-        borderRadius: 5
-    },
-    statusText: {
-        color: AppColor.white,
-        fontFamily: AppFontFamily.ManropeRegular,
-    },
 
-
-    header: {
-        marginBottom: 10,
-    },
-    name: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#222',
-    },
-    date: {
-        fontSize: 14,
-        color: '#666',
-        marginTop: 2,
-    },
-    contact: {
-        fontSize: 14,
-        color: '#666',
-        marginTop: 2,
-    },
-    divider: {
-        height: 1,
-        backgroundColor: '#eee',
-        marginVertical: 10,
-    },
-    summary: {},
-    summaryTitle: {
-        fontSize: 15,
-        fontWeight: '600',
-        color: '#444',
-        marginBottom: 6,
-    },
-    row: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginVertical: 2,
-    },
-    label: {
-        fontSize: 14,
-        color: '#555',
-    },
-    value: {
-        fontSize: 14,
-        color: '#333',
-    },
-    totalLabel: {
-        fontWeight: 'bold',
-        color: '#111',
-    },
-    totalValue: {
-        fontWeight: 'bold',
-        color: '#111',
-    },
 });
 
 

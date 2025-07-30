@@ -131,14 +131,7 @@ const isObjectEmpty = obj => {
   return true;
 };
 
-const formatNumber = value => {
-  if (value >= 100000) {
-    return (value / 100000).toFixed(2).replace(/\.0$/, '') + 'L';
-  } else if (value >= 1000) {
-    return (value / 1000).toFixed(2).replace(/\.0$/, '') + 'K';
-  }
-  return parseFloat(value).toFixed(2);
-};
+
 
 const formatNumber1 = value => {
   if (value >= 100000) {
@@ -166,7 +159,13 @@ const formatNumberWithCommas = (num) => {
   });
 };
 
-
+const formatNumber = (num) => {
+  if (!num) return '0';
+  return Number(num).toLocaleString('en-IN', {
+   // minimumFractionDigits: 2,
+   // maximumFractionDigits: 2,
+  });
+};
 
 const isDebugMode = () => __DEV__;
 

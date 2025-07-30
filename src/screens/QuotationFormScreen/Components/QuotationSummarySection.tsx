@@ -9,15 +9,20 @@ import { formatNumberWithCommas, showAlert } from '../../../utils/Helper';
 import TextInputComponent from '../../../components/TextInputComponent';
 import ButtonComponent from '../../../components/ButtonComponent';
 import Loader from '../../../components/Loader/Loader';
+import ErrorComponent from '../../../components/ErrorComponent';
+import { Formik } from 'formik';
+import { validationSchema } from './Validation';
+import UploadImageView from './UploadImageView';
 
 interface Props {
   quotationForm: QuotationForm;
   data: QuotationSummary;
   onChange: (updated: Partial<QuotationForm>) => void;
   onSubmit: () => void;
+  setImageUrl : (url: string) => void;
 }
 
-const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChange, onSubmit }) => {
+const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChange, onSubmit, setImageUrl }) => {
   const navigation = useNavigation();
   // Calculate costs
   const goldCost = parseFloat(quotationForm.goldDetails.totalGoldCost) || 0;
@@ -52,12 +57,18 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
     });
   }, [goldCost, labourCost, diamondCost, total, gst, finalTotal]);
 
+  const generatePDF = (values : any) => {
+    quotationForm.clientDetails.name = values.name;
+    quotationForm.clientDetails.contactNumber = values.contactNumber;
+    quotationForm.clientDetails.city = values.city;
+    onSubmit()
+  } 
 
   return (
     <View style={[globalStyles.mainContainer]}>
 
       <Header name="Quotation Summary" navigation={navigation} />
-      
+
       <ScrollView style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 8 }}>
         {/* Cost Breakdown Section */}
         <View style={styles.card}>
@@ -107,52 +118,80 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
           </View>
         </View>
 
-        <TextInputComponent
-          title="Client Name"
-          placeholder="Enter Client Name"
-          onChangeText={(text) =>
-            onChange({
-              clientDetails: {
-                ...quotationForm.clientDetails,
-                name: text,
-              },
-            })
-          }
-          value={quotationForm.clientDetails.name}
-          keyboardType="default">
-        </TextInputComponent>
-
-        <TextInputComponent
-          title="Client Phone Number"
-          placeholder="Enter Phone Number"
-          onChangeText={(text) =>
-            onChange({
-              clientDetails: {
-                ...quotationForm.clientDetails,
-                contactNumber: text,
-              },
-            })
-          }
-          value={quotationForm.clientDetails.contactNumber}
-          keyboardType="number-pad">
-        </TextInputComponent>
-
-        <ButtonComponent
-          title="Generate PDF"
-          onPress={() => {
-            if (!quotationForm.clientDetails.name.trim()) {
-              showAlert('Client name is required');
-              return;
-            }
-
-            if (!quotationForm.clientDetails.contactNumber.trim()) {
-              showAlert('Client phone number is required');
-              return;
-            }
-
-            onSubmit();
+        <Formik
+          initialValues={{
+            name: '',
+            contactNumber: '',
+            city: ''
           }}
-        />
+          validateOnMount={true}
+          validationSchema={validationSchema}
+          onSubmit={values => generatePDF(values)}>
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            values,
+            errors,
+            touched,
+          }) => (
+            <>
+              <TextInputComponent
+                title="Name"
+                placeholder="Enter customer name"
+                onChangeText={handleChange('name')}
+                onBlur={handleBlur('name')}
+                value={values.name}>
+                <ErrorComponent
+                  errors={errors}
+                  touched={touched}
+                  fieldName={'name'}
+                  flag={false}
+                />
+              </TextInputComponent>
+
+              <TextInputComponent
+                title="Mobile No"
+                placeholder="Enter customer contact number  "
+                onChangeText={handleChange('contactNumber')}
+                onBlur={handleBlur('contactNumber')}
+                value={values.contactNumber}
+                keyboardType="number-pad"
+                maxLength={10}>
+                <ErrorComponent
+                  errors={errors}
+                  touched={touched}
+                  fieldName={'contactNumber'}
+                  flag={false}
+                />
+              </TextInputComponent>
+
+              <TextInputComponent
+                title="City"
+                placeholder="Enter city"
+                onChangeText={handleChange('city')}
+                onBlur={handleBlur('city')}
+                value={values.city}>
+                <ErrorComponent
+                  errors={errors}
+                  touched={touched}
+                  fieldName={'city'}
+                  flag={false}
+                />
+              </TextInputComponent>
+
+              <UploadImageView setImageUrl= {setImageUrl}/>
+
+
+              <ButtonComponent
+                title={'Generate PDF'}
+                onPress={() => {
+                  handleSubmit();
+                }}
+              />
+            </>
+          )}
+        </Formik>
 
       </ScrollView>
     </View >

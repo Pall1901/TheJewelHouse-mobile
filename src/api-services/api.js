@@ -48,3 +48,10 @@ export const createQuotation = (requestBody) =>
     data: requestBody,
   });
 
+  export const getOrderHistoryList = (params = '', requestBody) =>
+  apiClient({
+    method: routes.GET_ORDER_HISTORY.METHOD,
+    url: routes.GET_ORDER_HISTORY.URL + params,
+    data: requestBody,
+  });
+

@@ -52,7 +52,7 @@ const OrderFormScreen = (props: OrderFormProps) => {
               name: item.clientDetails.name,
               contactNumber: item.clientDetails.contactNumber,
               address: '',
-              city: '',
+              city: item.clientDetails.city,
               pinCode: '',
               email: '',
               aadhaarNumber: '',

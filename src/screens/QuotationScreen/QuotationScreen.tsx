@@ -55,7 +55,7 @@ const QuotationScreen = (props: QuotationsProps) => {
           ListEmptyComponent={() => (
 
             <View style={styles.errorView}>
-              {!quotationList ?
+              {!loading && quotationList ?
                 <ErrorDialogComponent
                   icon='noDataFound'
                   title={'Quotation data not found.'}

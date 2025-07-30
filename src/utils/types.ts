@@ -3,6 +3,7 @@ export interface ClientDetails {
   contactNumber: string;
   email: string;
   address: string;
+  city : string;
 }
 
 export interface GoldDetails {
@@ -24,6 +25,7 @@ export interface DiamondDetails {
   clarity: string;
   ratePerCts: string;
   discount: string;
+  ratePerCtsAfterDis : string;
   totalAmount: string;
 }
 

@@ -34,6 +34,10 @@ export const routes = {
         METHOD: AppConstants.API_METHOD.POST,
         URL: PROD_BASE_URL+'order/place-order',
     },
+     GET_ORDER_HISTORY: {
+        METHOD: AppConstants.API_METHOD.GET,
+        URL: PROD_BASE_URL+'order/history/',
+    },
   
 };
 

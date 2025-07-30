@@ -38,7 +38,7 @@ export const errorMessages = {
       required: 'Please select electricity board',
     },
     name: {
-      required: 'Please enter your name',
+      required: 'Please enter customer name',
       invalid: 'Please enter valid name',
       maxLength: 'Name should be less than 50 characters',
     },

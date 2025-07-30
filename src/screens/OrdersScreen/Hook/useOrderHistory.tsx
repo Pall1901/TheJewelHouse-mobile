@@ -2,56 +2,51 @@ import { useState } from 'react';
 import { showToastMessage } from '../../../utils/Helper';
 import { HttpStatusCode } from '../../../utils/enums';
 import { useUser } from '../../../ayncStorage/UserContext';
-import { getQuotationHistoryList } from '../../../api-services/api';
+import { getOrderHistoryList } from '../../../api-services/api';
 
 
-type useQuotationHistoryReturnType = {
-    getQuotationList: (isRefresh?: boolean) => void;
-    quotationList: any[];
+type useOrderHistoryReturnType = {
+    getOrderList: (isRefresh?: boolean) => void;
+    orderList: any[];
     loading: boolean;
     hasMore: boolean;
 };
-const useQuotationHistory = (): useQuotationHistoryReturnType => {
-    const { setLoader, user } = useUser()
-    const [quotationList, setQuotationList] = useState<any[]>([]);
+const useOrderHistory = (): useOrderHistoryReturnType => {
+    const {user} = useUser()
+    const [orderList, setOrderList] = useState<any[]>([]);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
 
-    const getQuotationList = (isRefresh = false) => {
-        getQuotationListHandler(isRefresh)
+    const getOrderList = (isRefresh = false) => {
+        getOrderListHandler(isRefresh)
     };
 
-
-
-    const getQuotationListHandler = async (isRefresh = false) => {
+    const getOrderListHandler = async (isRefresh = false) => {
 
         if (loading || (!hasMore && !isRefresh)) return;
 
         if (isRefresh) {
             setPage(1);
             setHasMore(true);
-            setQuotationList([]);
+            setOrderList([]);
         }
 
         const nextPage = isRefresh ? 1 : page;
         const query = `${user?.id}?page=${nextPage}&items_per_page=10`;
-
+        
         setLoading(true);
-        //if (nextPage === 1) setLoader(true);
-
         try {
-            const res = await getQuotationHistoryList(query);
+            const res = await getOrderHistoryList(query);
             const { data = {} } = res;
 
-            if (data?.code === HttpStatusCode.OK) {
-                const newData = data.data || [];
-
-                setQuotationList(prev => (nextPage === 1 ? newData : [...(prev || []), ...newData]));
+            if (data?.code === HttpStatusCode.OK) {                
+                const newData = data.orders || [];
+                setOrderList(prev => (nextPage === 1 ? newData : [...(prev || []), ...newData]));
                 setPage(nextPage + 1);
                 if (newData.length < 10) setHasMore(false);
             } else {
-                setHasMore(false)
+                 setHasMore(false)
                 showToastMessage(data.message, 'danger');
             }
         } catch (error: any) {
@@ -63,10 +58,10 @@ const useQuotationHistory = (): useQuotationHistoryReturnType => {
 
     };
 
+   
 
-
-    return { getQuotationList, quotationList, loading, hasMore };
+    return { getOrderList, orderList, loading, hasMore };
 
 };
 
-export default useQuotationHistory;
+export default useOrderHistory;
