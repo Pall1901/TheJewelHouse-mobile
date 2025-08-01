@@ -38,7 +38,7 @@ const useOrder = (navigation: any): UseOrderReturnType => {
             "pinCode": values.pinCode,
             "aadhaarNumber": values.aadhaarNumber,
             "panCardNumber": values.panCardNumber,
-            "expectedDeliveryDate": values.expectedDeliveryDate,
+            "expectedDeliverydate": values.expectedDeliveryDate,
         }
 
         let datas = {

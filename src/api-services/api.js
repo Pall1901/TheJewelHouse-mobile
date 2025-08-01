@@ -55,3 +55,10 @@ export const createQuotation = (requestBody) =>
     data: requestBody,
   });
 
+  export const getDashboardSummery = (params = '', requestBody) =>
+  apiClient({
+    method: routes.GET_DASHBOARD_SUMMERY.METHOD,
+    url: routes.GET_DASHBOARD_SUMMERY.URL + params,
+    data: requestBody,
+  });
+

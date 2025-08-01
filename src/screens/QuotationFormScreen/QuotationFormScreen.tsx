@@ -37,6 +37,11 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
   const { submitQuotation, downloadResult, downloadPath } = useQuotationAPI(navigation);
 
   useEffect(() => {
+    console.log('imageUrl updated in parent:', imageUrl);
+  }, [imageUrl]);
+
+
+  useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', (e) => {
       if (currentStep > 1) {
         e.preventDefault();
@@ -50,7 +55,7 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
   }, [navigation, currentStep]);
 
   const [quotationForm, setQuotationForm] = useState<QuotationForm>({
-    clientDetails: { name: '', contactNumber: '', address: '', email: '' , city :''},
+    clientDetails: { name: '', contactNumber: '', address: '', email: '', city: '' },
     goldDetails: {
       goldPurity: '',
       goldColor: '',
@@ -70,7 +75,7 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
         clarity: '',
         ratePerCts: '',
         discount: '0',
-        ratePerCtsAfterDis :'',
+        ratePerCtsAfterDis: '',
         totalAmount: '',
       },
       {
@@ -81,7 +86,7 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
         clarity: '',
         ratePerCts: '',
         discount: '0',
-        ratePerCtsAfterDis :'',
+        ratePerCtsAfterDis: '',
         totalAmount: '',
       },
     ],
@@ -98,10 +103,10 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
       !diamond.totalAmount
     );
   };
- 
+
 
   const handleSubmit = () => {
-    
+
     const filteredDiamondDetails = quotationForm.diamondDetails.filter(diamond => !isDiamondEmpty(diamond));
     const filteredForm = {
       ...quotationForm,
@@ -112,7 +117,9 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
   };
 
 
-  const downloadAndSharePDF = async (downloadResult : any) => {
+  const downloadAndSharePDF = async (downloadResult: any) => {
+    console.log(downloadResult,'download result');
+    
     try {
       if (downloadResult.statusCode === 200) {
         await Share.open({
@@ -120,7 +127,6 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
           type: 'application/pdf',
           title: 'Share Quotation PDF',
         });
-        //showToastMessage('PDF saved to Downloads folder!', 'success');
       } else {
         showToastMessage('Failed to download PDF', 'danger');
       }
@@ -161,7 +167,7 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
             setQuotationForm((prev) => ({ ...prev, ...updated }))
           }
           onSubmit={handleSubmit}
-          setImageUrl = {setImageUrl}
+          setImageUrl={setImageUrl}
         />
       )}
 

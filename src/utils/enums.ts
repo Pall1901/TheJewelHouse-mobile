@@ -50,6 +50,7 @@ export enum ScreenName {
   LOGIN_SCREEN = 'LoginScreen',
   QUOTATION_FORM_SCREEN = 'QuotationFormScreen',
   ORDER_FORM_SCREEN = 'OrderFormScreen',
+  QUOTATION_DETAIL_SCREEN = 'QuotationDetailScreen',
 }
 
 export enum GoldPurity {

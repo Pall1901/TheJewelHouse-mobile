@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { DeviceEventEmitter, View } from 'react-native';
 import AppString from '../../app-res/AppString';
 import ButtonComponent from '../../components/ButtonComponent';
@@ -9,6 +9,8 @@ import TextValueWithTitle from './Components/TextValueWithTitle';
 import { styles } from './styles';
 import Loader from '../../components/Loader/Loader';
 import { useUser } from '../../ayncStorage/UserContext';
+import useSummery from './Hook/useSummery';
+import { useFocusEffect } from '@react-navigation/native';
 
 type DashboardProps = {
   navigation: any;
@@ -17,8 +19,10 @@ type DashboardProps = {
 
 const DashboardScreen = (props: DashboardProps) => {
   const { loader } = useUser();
+  const { getSummery, summery } = useSummery();
 
   useEffect(() => {
+
     DeviceEventEmitter.addListener("event.orderSubmitted", (eventData) => onSuccessQuotation(eventData));
     DeviceEventEmitter.addListener("event.orderPlaced", (eventData) => onSuccessOrder(eventData));
     return () => {
@@ -26,6 +30,12 @@ const DashboardScreen = (props: DashboardProps) => {
       DeviceEventEmitter.removeAllListeners("event.orderPlaced");
     };
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      getSummery();
+    }, [])
+  );
 
   const onSuccessQuotation = (eventData: any) => {
     if (eventData?.submit) {
@@ -48,12 +58,12 @@ const DashboardScreen = (props: DashboardProps) => {
       <View style={styles.rowView}>
         <TextValueWithTitle
           title={'Total Orders'}
-          value={'0'}
+          value={summery ? summery.totalOrders : '0'}
           style={{ marginRight: 10 }}
         />
         <TextValueWithTitle
           title={'Total Quotations'}
-          value={'0'}
+          value={summery ? summery.totalQuotations : '0'}
         />
       </View>
 

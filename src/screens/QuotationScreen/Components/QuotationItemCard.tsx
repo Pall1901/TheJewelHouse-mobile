@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import AppColor from '../../../app-res/AppColor';
 import AppDimension from '../../../app-res/AppDimension';
 import AppFontFamily from '../../../app-res/AppFontFamily';
@@ -22,7 +22,7 @@ const QuotationItemCard = ({ item, navigation }: QuotationItemCardProps) => {
     const formattedDate = new Date(date).toLocaleDateString();
 
     return (
-        <View style={styles.paddingHorizontal}>
+        <TouchableOpacity style={styles.paddingHorizontal} onPress={()=>{navigation.navigate(ScreenName.QUOTATION_DETAIL_SCREEN, { item: item })}}>
             <View style={styles.orderCard}>
 
                 <View style={styles.row}>
@@ -65,7 +65,7 @@ const QuotationItemCard = ({ item, navigation }: QuotationItemCardProps) => {
                     />
                 </View>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 };
 
@@ -88,8 +88,8 @@ const styles = StyleSheet.create({
             height: 2,
         },
         shadowOpacity: 0.1,
-        shadowRadius: 6,
-        elevation: 3,
+        //shadowRadius: 6,
+        //elevation: 3,
         marginBottom: AppDimension.SPACING_Y_04,
     },
     row: {

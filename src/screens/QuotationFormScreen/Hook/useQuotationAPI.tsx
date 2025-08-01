@@ -11,7 +11,7 @@ import RNFS from 'react-native-fs';
 
 type UseQuotationReturnType = {
     fetchDiamondRate: (size: any, color: any, shape: any, clarity: any, index: any) => void
-    submitQuotation: (values: any, openModal : any) => void;
+    submitQuotation: (values: any, openModal : any, imageUrl : string) => void;
     downloadResult: DownloadResult | null
     downloadPath : any
 };
@@ -93,7 +93,11 @@ const useQuotationAPI = (onRateData: (index: number, rateData: any) => void): Us
             if (data?.code == HttpStatusCode.Created) {
                 console.log(data.data.pdfUrl);
                 //setPdfUrl(data.data.pdfUrl)
-                const url = `${PROD_BASE_URL}${data.data.pdfUrl}`
+                const url = data.data.pdfUrl
+
+                console.log(url,'pdf urllll');
+                
+
                 const baseName = (url.split('/').pop() || 'quotation').replace('.pdf', '');
                 const uniqueName = `${baseName}_${Date.now()}.pdf`;
                 const downloadPath = `${RNFS.DownloadDirectoryPath}/${uniqueName}`;

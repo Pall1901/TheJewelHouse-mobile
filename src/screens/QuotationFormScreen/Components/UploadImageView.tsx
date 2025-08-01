@@ -13,7 +13,7 @@ import { PROD_BASE_URL } from '@env';
 
 
 interface UploadImageViewProps {
-  setImageUrl: (url: string) => void;
+    setImageUrl: (url: string) => void;
 }
 
 const uploadOptions = [
@@ -21,11 +21,11 @@ const uploadOptions = [
     { name: 'Click Photo', value: 'camera' },
 ];
 
-const UploadImageView = ({setImageUrl }: UploadImageViewProps) => {
+const UploadImageView = ({ setImageUrl }: UploadImageViewProps) => {
     const [showDropdown, setShowDropdown] = useState(false);
     const [loading, setLoading] = useState(false);
     const [imageUri, setImageUri] = useState<string | null>(null);
-    const {user} = useUser();
+    const { user } = useUser();
 
     const requestCameraPermission = async () => {
         const permission = Platform.select({
@@ -77,7 +77,7 @@ const UploadImageView = ({setImageUrl }: UploadImageViewProps) => {
         const granted = await requestCameraPermission();
         if (!granted) return;
 
-        launchCamera({ mediaType: 'photo',cameraType: 'back', }, res => {
+        launchCamera({ mediaType: 'photo', cameraType: 'back', }, res => {
             if (!res.didCancel && res.assets?.length) {
                 uploadImage(res.assets[0]);
             }
@@ -102,9 +102,10 @@ const UploadImageView = ({setImageUrl }: UploadImageViewProps) => {
                 },
                 body: formData,
             });
-            const { data = {} } = res;
-            console.log(data.url,'ressss');
-            setImageUrl(data.url)
+            const data = await res.json();
+            console.log(data.data.imageUrl, '....');
+            setImageUrl(data.data.imageUrl)
+            console.log('Image URL sent to parent:', data.data.imageUrl);
             setImageUri(image.uri);
         } catch (err) {
             console.error('Upload failed:', err);

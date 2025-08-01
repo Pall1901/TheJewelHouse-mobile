@@ -22,7 +22,7 @@ interface Props {
   setImageUrl : (url: string) => void;
 }
 
-const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChange, onSubmit, setImageUrl }) => {
+const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChange, onSubmit, setImageUrl }) => {  
   const navigation = useNavigation();
   // Calculate costs
   const goldCost = parseFloat(quotationForm.goldDetails.totalGoldCost) || 0;

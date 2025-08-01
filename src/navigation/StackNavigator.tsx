@@ -15,6 +15,7 @@ import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
 import OrdersScreen from '../screens/OrdersScreen/OrdersScreen';
 import QuotationFormScreen from '../screens/QuotationFormScreen/QuotationFormScreen';
 import OrderFormScreen from '../screens/OrderFormScreen/OrderFormScreen';
+import QuotationDetailScreen from '../screens/DashboardScreen/QuotationDetailScreen/QuotationDetailScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -51,6 +52,10 @@ const MainStackNavigator = ({
       <Stack.Screen
         name={ScreenName.ORDER_FORM_SCREEN}
         component={OrderFormScreen}
+        options={{ headerShown: false }} />
+      <Stack.Screen
+        name={ScreenName.QUOTATION_DETAIL_SCREEN}
+        component={QuotationDetailScreen}
         options={{ headerShown: false }} />
     </Stack.Navigator>
   );

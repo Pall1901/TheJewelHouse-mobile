@@ -4,6 +4,7 @@ import AppColor from '../../../app-res/AppColor';
 import AppDimension from '../../../app-res/AppDimension';
 import AppFontSize from '../../../app-res/AppFontSize';
 import AppFontFamily from '../../../app-res/AppFontFamily';
+import { formatNumberWithCommas } from '../../../utils/Helper';
 
 type OrderItemCardProps = {
   item: any;
@@ -11,6 +12,8 @@ type OrderItemCardProps = {
 };
 
 const OrderCard = ({ item, navigation }: OrderItemCardProps) => {
+  console.log(item);
+  
 
   const {
     customerDetails: {
@@ -33,13 +36,13 @@ const OrderCard = ({ item, navigation }: OrderItemCardProps) => {
 
       <View style={styles.row}>
         <View style={styles.rowView}>
-          <Text style={styles.textValue}>{name || 'Client Name'}</Text>
+          <Text style={styles.value}>{name || 'Client Name'}</Text>
           <View style={styles.view} />
-          <Text style={styles.textValue}>{contactNumber}</Text>
+          <Text style={styles.value}>{contactNumber}</Text>
         </View>
-        <Text style={styles.textValue}>{formattedDate}</Text>
+        <Text style={styles.value}>{formattedDate}</Text>
       </View>
-      <Text style={styles.textValue}>{email}</Text>
+      <Text style={styles.value}>{email}</Text>
 
       <View style={{ ...styles.rowView, marginTop: 10 }}>
         <Text style={styles.label}>Address:  </Text>
@@ -62,8 +65,13 @@ const OrderCard = ({ item, navigation }: OrderItemCardProps) => {
         </View>
         : <></>}
 
-      <View style={{ ...styles.rowView, marginVertical: AppDimension.SPACING_Y_10, justifyContent:'center' }}>
-        <Text style={styles.totalLabel}>Expected Delivery: </Text>
+        <View style={{ ...styles.rowView, justifyContent:'center' }}>
+        <Text style={styles.label}>Order Cost: </Text>
+        <Text style={styles.totalValue}>{formatNumberWithCommas(item.quotationId.quotationSummary.total)}</Text>
+      </View>
+
+      <View style={{ ...styles.rowView, justifyContent:'center' }}>
+        <Text style={styles.label}>Expected Delivery Date: </Text>
         <Text style={styles.totalValue}>{expectedDeliverydate}</Text>
       </View>
     </View>
@@ -133,7 +141,7 @@ const styles = StyleSheet.create({
     fontSize: AppFontSize.FONT_SIZE_14,
     fontFamily: AppFontFamily.ManropeExtraBold,
     color: AppColor.black,
-    textAlign: 'center',
+    //textAlign: 'center',
   },
 
   totalLabel: {
