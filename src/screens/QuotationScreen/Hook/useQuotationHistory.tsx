@@ -22,7 +22,8 @@ const useQuotationHistory = (): useQuotationHistoryReturnType => {
         getQuotationListHandler(isRefresh)
     };
 
-
+    console.log(quotationList, 'quotationList');
+    
 
     const getQuotationListHandler = async (isRefresh = false) => {
 

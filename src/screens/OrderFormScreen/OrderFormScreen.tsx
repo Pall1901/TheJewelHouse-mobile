@@ -204,6 +204,7 @@ const OrderFormScreen = (props: OrderFormProps) => {
                   value={values.expectedDeliveryDate}
                   iconType={Icons.Ionicons}
                   iconVisible={'calendar'}
+                  editable ={false}
                   onPress={onCalendarPress}>
                   <ErrorComponent
                     errors={errors}

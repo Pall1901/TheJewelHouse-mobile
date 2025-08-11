@@ -14,11 +14,13 @@ type QuotationItemCardProps = {
 };
 
 const QuotationItemCard = ({ item, navigation }: QuotationItemCardProps) => {
+    //console.log(item,'..................');
+    
 
     const handlePress = () => {
         navigation.navigate(ScreenName.ORDER_FORM_SCREEN, { item: item });
     };
-    const { clientDetails, quotationSummary, date } = item;
+    const { clientDetails, quotationSummary, date,orderStatus} = item;
     const formattedDate = new Date(date).toLocaleDateString();
 
     return (
@@ -57,6 +59,7 @@ const QuotationItemCard = ({ item, navigation }: QuotationItemCardProps) => {
                     <Text style={styles.totalValue}>₹{formatNumber(quotationSummary.total)}</Text>
                 </View>
 
+                {orderStatus !== 'placed' ?
                 <View style={{ alignItems: 'center' }}>
                     <ButtonComponent
                         title={'Place Order'}
@@ -64,6 +67,7 @@ const QuotationItemCard = ({ item, navigation }: QuotationItemCardProps) => {
                         textStyle={styles.tradeButtonText}
                     />
                 </View>
+                : null}
             </View>
         </TouchableOpacity>
     );
