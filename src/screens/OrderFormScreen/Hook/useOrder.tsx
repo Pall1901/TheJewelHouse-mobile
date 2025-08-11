@@ -45,7 +45,8 @@ const useOrder = (navigation: any): UseOrderReturnType => {
             userId: user?.id,
             quotationId: id,
             orderDate: formattedDate,
-            customerDetails: data
+            customerDetails: data,
+            orderStatus:'placed'
         };
         console.log(datas, 'data');
 
