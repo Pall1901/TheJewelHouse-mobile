@@ -9,6 +9,7 @@ export interface ClientDetails {
 export interface GoldDetails {
   goldPurity: string;
   goldColor: string;
+  category : string;
   jewelrySize: string;
   weight: string;
   ratePerGram: string;

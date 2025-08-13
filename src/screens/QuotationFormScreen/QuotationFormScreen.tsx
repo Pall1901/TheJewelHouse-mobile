@@ -59,6 +59,7 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
     goldDetails: {
       goldPurity: '',
       goldColor: '',
+      category: '',
       jewelrySize: '',
       weight: '',
       ratePerGram: '',
