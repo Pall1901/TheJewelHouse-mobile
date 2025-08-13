@@ -94,6 +94,14 @@ const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
         <GoldColorSelector selectedColor={color} onSelect={setColor} />
 
         <TextInputComponent
+          title="Category"
+          placeholder="Enter category"
+          onChangeText={(text) => onChange({ ...data, category: text })}
+          value={data.category}
+          keyboardType="default">
+        </TextInputComponent>
+
+        <TextInputComponent
           title="Jwellery Size"
           placeholder="Enter Jwellery Size"
           onChangeText={(text) => onChange({ ...data, jewelrySize: text })}

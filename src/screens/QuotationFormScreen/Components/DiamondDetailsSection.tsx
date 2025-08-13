@@ -203,7 +203,7 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
       >
         {type === 'center'
           ? `Centerpiece Diamond ${blockIndex + 1}`
-          : `Side Diamond ${blockIndex + 1}`}
+          : `Studded Diamond ${blockIndex + 1}`}
       </Text>
 
       <View style={styles.row}>

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { getDashboardSummery } from '../../../api-services/api'
 import { useUser } from '../../../ayncStorage/UserContext'
 import { HttpStatusCode } from '../../../utils/enums'
-import { checkInternet } from '../../../utils/Helper'
+import { checkInternet, showToastMessage } from '../../../utils/Helper'
 
 type useSummeryReturnType =  {
     getSummery: () => void;
@@ -31,12 +31,12 @@ const useSummery = () : useSummeryReturnType => {
             const { data = {} } = response;
              if (data?.code == HttpStatusCode.OK) {   
                 setSummery(data.data);
-                console.log(data.data);
-                
+                console.log(data.data);    
             }
         }
         catch (error) {
-            console.error(error)
+            showToastMessage(error.message, 'danger');
+            console.log(error)
         }
         finally{
             setLoader(false)

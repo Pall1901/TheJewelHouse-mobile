@@ -92,7 +92,6 @@ const useQuotationAPI = (onRateData: (index: number, rateData: any) => void): Us
 
             if (data?.code == HttpStatusCode.Created) {
                 console.log(data.data.pdfUrl);
-                //setPdfUrl(data.data.pdfUrl)
                 const url = data.data.pdfUrl
 
                 console.log(url,'pdf urllll');
