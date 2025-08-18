@@ -80,7 +80,7 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
         totalAmount: '',
       },
       {
-        type: 'side',
+        type: 'studded',
         shape: '',
         size: '',
         color: '',
