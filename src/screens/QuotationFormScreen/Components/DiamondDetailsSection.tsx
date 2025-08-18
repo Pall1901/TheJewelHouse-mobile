@@ -71,13 +71,13 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
 
   // Separate center and side diamonds
   const centerDiamonds = data.filter(d => d.type === 'center');
-  const sideDiamonds = data.filter(d => d.type === 'side');
+  const sideDiamonds = data.filter(d => d.type === 'studded');
 
   const isValidSize = (size: string) => {
     return size?.trim().length >= 3;
   };
 
-  const handleAddDiamond = (type: 'center' | 'side') => {
+  const handleAddDiamond = (type: 'center' | 'studded') => {
     const newDiamond: DiamondDetails = {
       type,
       shape: '',
@@ -188,7 +188,7 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
   ).current;
 
 
-  const renderDiamondBlock = (diamond: DiamondDetails, index: number, blockIndex: number, type: 'center' | 'side') => (
+  const renderDiamondBlock = (diamond: DiamondDetails, index: number, blockIndex: number, type: 'center' | 'studded') => (
     <View
       key={blockIndex}
       style={styles.card}
@@ -310,12 +310,12 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
         {/* Side diamonds */}
         {sideDiamonds.map((diamond, blockIndex) => {
           const index = data.findIndex(d => d === diamond);
-          return renderDiamondBlock(diamond, index, blockIndex, 'side');
+          return renderDiamondBlock(diamond, index, blockIndex, 'studded');
         })}
         {sideDiamonds.length < 4 && (
           <ButtonComponent
             title="Add Another Diamond"
-            onPress={() => handleAddDiamond('side')}
+            onPress={() => handleAddDiamond('studded')}
             style={{ width: 250, alignSelf: 'center' }}
             textStyle={{ textAlign: 'center', fontSize: AppFontSize.FONT_SIZE_16 }}
           />
