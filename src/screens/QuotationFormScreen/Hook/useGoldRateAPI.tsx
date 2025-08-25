@@ -59,7 +59,7 @@ export const useGoldRateAPI = () => {
 
   const initializeData = async () => {
     await Promise.all([
-      loadDataOncePerDay(GOLD_RATE_DATE_KEY, GOLD_RATE_DATA_KEY, fetchGoldRate, setGoldRateData),
+     // loadDataOncePerDay(GOLD_RATE_DATE_KEY, GOLD_RATE_DATA_KEY, fetchGoldRate, setGoldRateData),
       loadDataOncePerDay(DROPDOWN_DATE_KEY, DROPDOWN_DATA_KEY, fetchDropdown, setDropdown),
     ]);
   };

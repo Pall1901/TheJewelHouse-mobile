@@ -15,6 +15,13 @@ export const getGoldRate = (requestBody) =>
     data: requestBody,
   });
 
+export const getGoldRateFromDatabase = (requestBody) =>
+  apiClient({
+    method: routes.GET_GOLD_RATE_FROM_DATABASE.METHOD,
+    url: routes.GET_GOLD_RATE_FROM_DATABASE.URL,
+    data: requestBody,
+  });  
+
 export const getDropdown = (requestBody) =>
   apiClient({
     method: routes.GET_DROPDOWN.METHOD,
