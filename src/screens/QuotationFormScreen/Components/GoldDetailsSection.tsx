@@ -6,7 +6,7 @@ import Header from '../../../components/Header';
 import RadioButton from '../../../components/RadioButton';
 import TextInputComponent from '../../../components/TextInputComponent';
 import globalStyles from '../../../theme/globalStyles';
-import { GoldColor, GoldPurity } from '../../../utils/enums';
+import { GoldColor, GoldPurity, HttpStatusCode } from '../../../utils/enums';
 import { GoldDetails } from '../../../utils/types';
 import { styles } from '../styles';
 import GoldColorSelector from './GoldColorSelector';
@@ -14,6 +14,8 @@ import { useGoldRateAPI } from '../Hook/useGoldRateAPI';
 import { useUser } from '../../../ayncStorage/UserContext';
 import { formatNumberWithCommas } from '../../../utils/Helper';
 import AppDimension from '../../../app-res/AppDimension';
+import { getGoldRateFromDatabase } from '../../../api-services/api';
+import Loader from '../../../components/Loader/Loader';
 
 interface Props {
   data: GoldDetails;
@@ -34,10 +36,34 @@ export const goldPurityOptions = [
 
 const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
   const navigation = useNavigation();
+  const { loader, setLoader } = useUser();
   const [selected, setSelected] = useState<GoldPurity>(data.goldPurity as GoldPurity || GoldPurity.GOLD_14);
   const [color, setColor] = useState<GoldColor>(data.goldColor as GoldColor || GoldColor.YELLOW);
 
- const { goldRateData } = useUser();
+// const { goldRateData } = useUser();
+
+  const [goldRateData, setGoldRateData] = useState<any>(null);
+
+  useEffect(() => {
+    getSummeryHandler()
+  }, [])
+
+  const getSummeryHandler = async () => {
+    setLoader(true)
+    try {
+      const response = await getGoldRateFromDatabase()
+      const { data = {} } = response;
+      if (data?.code == HttpStatusCode.OK) {
+          setGoldRateData(data?.data[0])
+      }
+    }
+    catch (error) {
+      console.log(error)
+    }
+    finally {
+      setLoader(false)
+    }
+  }
 
 
   // Rates
@@ -45,11 +71,10 @@ const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
     ? Number(
       parseFloat(
         selected === GoldPurity.GOLD_14
-          ? goldRateData.price_gram_14k
-          : goldRateData.price_gram_18k
+          ? goldRateData.rate14k
+          : goldRateData.rate18k
       ).toFixed(2)
     )
-
     : 0;
   const parsedWeight = parseFloat(data.weight) || 0;
   const parsedLabourCost = parseFloat(data.labourCost) || 0;
@@ -71,6 +96,7 @@ const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
 
   return (
     <View style={[globalStyles.mainContainer]}>
+      {loader && <Loader />}
       <Header name={'Gold Details'} navigation={navigation} />
 
       <ScrollView style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 8, marginBottom: 16 }}>
@@ -117,7 +143,7 @@ const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
           keyboardType="numeric">
         </TextInputComponent>
 
-        <View style={{...styles.totalPriceView,paddingVertical:AppDimension.SPACING_Y_16}}>
+        <View style={{ ...styles.totalPriceView, paddingVertical: AppDimension.SPACING_Y_16 }}>
           <Text style={styles.text}>
             Total Gold Cost
           </Text>
@@ -135,7 +161,7 @@ const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
         </TextInputComponent>
 
 
-        <View style={{...styles.totalPriceView,paddingVertical:AppDimension.SPACING_Y_16,marginTop: AppDimension.SPACING_Y_10}}>
+        <View style={{ ...styles.totalPriceView, paddingVertical: AppDimension.SPACING_Y_16, marginTop: AppDimension.SPACING_Y_10 }}>
           <Text style={styles.text}>
             Total Labour Cost
           </Text>

@@ -77,14 +77,18 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
     return size?.trim().length >= 3;
   };
 
+  const STUDDED_COLOR = 'E-F';
+  const STUDDED_CLARITY = 'VVS-VS';
+  const STUDDED_RATE = '18000';
+
   const handleAddDiamond = (type: 'center' | 'studded') => {
     const newDiamond: DiamondDetails = {
       type,
       shape: '',
       size: '',
-      color: '',
-      clarity: '',
-      ratePerCts: '',
+      color: type === 'studded' ? STUDDED_COLOR : '',
+      clarity: type === 'studded' ? STUDDED_CLARITY : '',
+      ratePerCts: type === 'studded' ? STUDDED_RATE : '',
       discount: '',
       ratePerCtsAfterDis: '',
       totalAmount: '',
@@ -113,11 +117,18 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
   });
 
   const handleUpdateDiamond = (index: number, updatedDiamond: DiamondDetails) => {
-    const { ratePerCts, discount, size, shape, color, clarity } = updatedDiamond;
+    const { ratePerCts, discount, size, shape, color, clarity, type } = updatedDiamond;
+
+      // For studded diamonds, always use fixed values
+  if (type === 'studded') {
+    updatedDiamond.color = STUDDED_COLOR;
+    updatedDiamond.clarity = STUDDED_CLARITY;
+    updatedDiamond.ratePerCts = STUDDED_RATE;
+  }
 
     // Calculate rate per cts after discount
-    let ratePerCtsAfterDis = ratePerCts ? parseFloat(ratePerCts) : 0;
-    if (ratePerCts && discount) {
+    let ratePerCtsAfterDis = updatedDiamond.ratePerCts ? parseFloat(updatedDiamond.ratePerCts) : 0;
+    if (updatedDiamond.ratePerCts && discount) {
       const disc = parseFloat(discount) || 0;
       ratePerCtsAfterDis = ratePerCtsAfterDis * (1 - disc / 100);
     }
@@ -127,20 +138,14 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
     const sizeNum = size ? parseFloat(size) : 0;
     let totalAmount = ratePerCtsAfterDis * sizeNum;
     updatedDiamond.totalAmount = totalAmount ? totalAmount.toFixed(2) : '0';
-    // updatedDiamond.totalAmount =ratePerCts
-    // let totalAmount = updatedDiamond.totalAmount;
-
-    // if (ratePerCts && discount) {
-    //   totalAmount = calculateTotalAmount(ratePerCts, discount);
-    // }
 
     const updatedDiamonds = [...data];
     updatedDiamonds[index] = { ...updatedDiamond };
     onChange(updatedDiamonds);
 
-   
 
-    if (shape && color && clarity && isValidSize(size)) {
+
+    if (type === 'center' && shape && color && clarity && isValidSize(size)) {
       const hasChanged =
         size !== prevValuesRef.current.size ||
         shape !== prevValuesRef.current.shape ||
@@ -206,6 +211,7 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
           : `Studded Diamond ${blockIndex + 1}`}
       </Text>
 
+
       <View style={styles.row}>
         <CustomDropdown
           placeholder="Select Shape"
@@ -215,17 +221,30 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
           wrapperStyle={{ marginRight: AppDimension.SPACING_X_10, flex: 0.5 }}
           title="Shape"
         />
-        <CustomDropdown
-          placeholder="Select Color"
-          actionItems={color}
-          onSelect={item => handleUpdateDiamond(index, { ...diamond, color: item.value })}
-          selectedValue={color.find(item => item.value === diamond.color)}
-          wrapperStyle={{ flex: 0.5 }}
-          title="Color"
-        />
+        {type === 'center' ?
+          <CustomDropdown
+            placeholder="Select Color"
+            actionItems={color}
+            onSelect={item => handleUpdateDiamond(index, { ...diamond, color: item.value })}
+            selectedValue={color.find(item => item.value === diamond.color)}
+            wrapperStyle={{ flex: 0.5 }}
+            title="Color"
+          />
+          :
+          <TextInputComponent
+            title="Select Color"
+            onChangeText={text => handleUpdateDiamond(index, { ...diamond, color: text })}
+            value={'E-F'}
+            flag={true}
+            editable={false}
+            wrapperStyle={{ flex: 0.5 }}
+          />
+        }
       </View>
 
+
       <View style={styles.row}>
+        {type === 'center' ?
         <CustomDropdown
           placeholder="Select Clarity"
           actionItems={clarity}
@@ -234,6 +253,16 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
           wrapperStyle={{ marginRight: AppDimension.SPACING_X_10, flex: 0.5 }}
           title="Clarity"
         />
+         :
+          <TextInputComponent
+            title="Select Clarity"
+            onChangeText={text => handleUpdateDiamond(index, { ...diamond, clarity: text })}
+            value={'VVS-VS'}
+            flag={true}
+            editable={false}
+            wrapperStyle={{ marginRight: AppDimension.SPACING_X_10, flex: 0.5 }}
+          />
+        } 
         <TextInputComponent
           title="Size (cts)"
           placeholder="Enter size"

@@ -11,6 +11,10 @@ export const routes = {
         METHOD: AppConstants.API_METHOD.GET,
         URL: PROD_BASE_URL + 'gold/gold-price?metal=XAU&currency=INR',
     },
+    GET_GOLD_RATE_FROM_DATABASE: {
+        METHOD: AppConstants.API_METHOD.GET,
+        URL: PROD_BASE_URL + 'gold/get-all-get',
+    },
     GET_DROPDOWN: {
         METHOD: AppConstants.API_METHOD.GET,
         URL: PROD_BASE_URL + 'diamonds/dropdowns',
