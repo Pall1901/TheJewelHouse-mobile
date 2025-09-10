@@ -39,7 +39,7 @@ const ButtonComponent = ({
       disabled={disabled}
       onPress={onPress}>
       <View
-        style={[styles.button, style, disabled && {backgroundColor:AppColor.greyLight}]}>
+        style={[styles.button, style,  { alignSelf: 'stretch' },disabled && {backgroundColor:AppColor.greyLight}]}>
         <Text style={[styles.text, textStyle]}>{title}</Text>
         {showIcon
           ? AppSvgIcon(

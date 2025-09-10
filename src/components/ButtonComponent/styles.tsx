@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
       flexDirection:'row',
       backgroundColor: AppColor.primaryGreen,
       paddingVertical: AppDimension.SPACING_Y_08,
-      minWidth: AppDimension.SPACING_X_200,
+      //minWidth: AppDimension.SPACING_X_200,
       borderRadius: AppDimension.SPACING_X_10,
       //elevation: AppDimension.SPACING_X_05,
       alignItems:'center',

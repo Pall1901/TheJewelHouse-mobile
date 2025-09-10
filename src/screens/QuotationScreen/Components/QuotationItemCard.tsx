@@ -15,16 +15,19 @@ type QuotationItemCardProps = {
 
 const QuotationItemCard = ({ item, navigation }: QuotationItemCardProps) => {
     //console.log(item,'..................');
-    
+
 
     const handlePress = () => {
         navigation.navigate(ScreenName.ORDER_FORM_SCREEN, { item: item });
     };
-    const { clientDetails, quotationSummary, date,orderStatus} = item;
+    const editQuotation = () => {
+        // navigation.navigate(ScreenName.ORDER_FORM_SCREEN, { item: item });
+    };
+    const { clientDetails, quotationSummary, date, orderStatus } = item;
     const formattedDate = new Date(date).toLocaleDateString();
 
     return (
-        <TouchableOpacity style={styles.paddingHorizontal} onPress={()=>{navigation.navigate(ScreenName.QUOTATION_DETAIL_SCREEN, { item: item })}}>
+        <TouchableOpacity style={styles.paddingHorizontal} onPress={() => { navigation.navigate(ScreenName.QUOTATION_DETAIL_SCREEN, { item: item }) }}>
             <View style={styles.orderCard}>
 
                 <View style={styles.row}>
@@ -60,14 +63,22 @@ const QuotationItemCard = ({ item, navigation }: QuotationItemCardProps) => {
                 </View>
 
                 {orderStatus !== 'placed' ?
-                <View style={{ alignItems: 'center' }}>
-                    <ButtonComponent
-                        title={'Place Order'}
-                        onPress={handlePress}
-                        textStyle={styles.tradeButtonText}
-                    />
-                </View>
-                : null}
+                    <View style={styles.buttonRow}>
+                        <View style={{ marginRight: 8, flex: 1 }}>
+                            <ButtonComponent
+                                title={'Edit Quotation'}
+                                onPress={editQuotation}
+                                textStyle={styles.tradeButtonText} />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            <ButtonComponent
+                                title={'Place Order'}
+                                onPress={handlePress}
+                                textStyle={styles.tradeButtonText}
+                            />
+                        </View>
+                    </View>
+                    : null}
             </View>
         </TouchableOpacity>
     );
@@ -97,11 +108,17 @@ const styles = StyleSheet.create({
         marginBottom: AppDimension.SPACING_Y_04,
     },
     row: {
-        flex: 1,
+        //flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         // marginBottom: AppDimension.SPACING_Y_05,
+    },
+    buttonRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+        marginTop: AppDimension.SPACING_Y_10, // Add some space above buttons
     },
     rowView: {
         flexDirection: 'row',

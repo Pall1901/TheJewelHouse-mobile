@@ -27,7 +27,6 @@ const useQuotationAPI = (onRateData: (index: number, rateData: any) => void): Us
 
 
     const fetchDiamondRate = ({ size, color, shape, clarity, index }) => {
-        console.log(size, 'size');
 
         setLoader(false);
         const checkInternetStatus = async () => {
@@ -47,6 +46,7 @@ const useQuotationAPI = (onRateData: (index: number, rateData: any) => void): Us
             const { data = {} } = res;
 
             if (data?.code == HttpStatusCode.OK) {
+                console.log(data.data, 'diamond rate data');
                 onRateData(index, data.data);
             }
             else {

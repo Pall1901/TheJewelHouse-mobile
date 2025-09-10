@@ -1,10 +1,10 @@
 import React from 'react'
 import { Button, Linking, ScrollView, Text, View } from 'react-native'
-import Header from '../../../components/Header'
-import globalStyles from '../../../theme/globalStyles'
+import Header from '../../components/Header'
+import globalStyles from '../../theme/globalStyles'
 import { styles } from './styles';
-import ButtonComponent from '../../../components/ButtonComponent';
-import { formatNumber } from '../../../utils/Helper';
+import ButtonComponent from '../../components/ButtonComponent';
+import { formatNumber } from '../../utils/Helper';
 
 type QuotationDetailProps = {
   navigation: any;

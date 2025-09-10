@@ -69,7 +69,7 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
     },
     diamondDetails: [
       {
-        type: 'center',
+        type: 'CENTER',
         shape: '',
         size: '',
         color: '',
@@ -80,7 +80,7 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
         totalAmount: '',
       },
       {
-        type: 'studded',
+        type: 'STUDDED',
         shape: '',
         size: '',
         color: '',

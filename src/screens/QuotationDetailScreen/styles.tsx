@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
-import AppDimension from "../../../app-res/AppDimension";
-import AppColor from "../../../app-res/AppColor";
+import AppDimension from "../../app-res/AppDimension";
+import AppColor from "../../app-res/AppColor";
 
 export const styles = StyleSheet.create({
     card: {
@@ -36,10 +36,12 @@ export const styles = StyleSheet.create({
         flex: 1, // Makes both items occupy equal width
     },
     label: {
+        color: '#555',
         fontWeight: 'bold',
         marginRight: 4,
     },
     value: {
+        color: '#000',
         marginRight: 12,
     },
     mainRow: {

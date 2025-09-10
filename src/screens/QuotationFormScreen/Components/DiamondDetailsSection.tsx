@@ -22,10 +22,10 @@ interface Props {
   onNext: () => void;
 }
 
-const discount = Array.from({ length: 11 }, (_, i) => ({
-  value: `${i}`,
-  name: `${i}`,
-}));
+// const discount = Array.from({ length: 11 }, (_, i) => ({
+//   value: `${i}`,
+//   name: `${i}`,
+// }));
 
 type DropdownItem = {
   value: string;
@@ -47,8 +47,28 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
     }
   );
 
+  const [discountOptions, setDiscountOptions] = useState<{ [index: number]: DropdownItem[] }>({});
+
+  const updateDiscountOptions = (apiDiscount: any, index: number) => {
+    let maxDiscount = 0;
+    if (apiDiscount !== undefined && apiDiscount !== null && !isNaN(parseFloat(apiDiscount))) {
+      maxDiscount = Math.round(parseFloat(apiDiscount) * 100);
+    }
+    // Always include 0
+    const options = Array.from({ length: maxDiscount + 1 }, (_, i) => ({
+      value: `${i}`,
+      name: `${i}`,
+    }));
+    setDiscountOptions(prev => ({
+      ...prev,
+      [index]: options.length > 0 ? options : [{ value: '0', name: '0' }],
+    }));
+  };
+
   useEffect(() => {
     Object.entries(diamondRateData).forEach(([indexStr, rateData]) => {
+      console.log(rateData, 'rateData in useEffect');
+
       const index = Number(indexStr);
       if (
         data[index] &&
@@ -61,7 +81,12 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
         };
         handleUpdateDiamond(index, updatedDiamond);
       }
+
+      const apiDiscount = rateData.discount; // e.g., 0.15
+      updateDiscountOptions(apiDiscount, index);
+
     });
+
   }, [diamondRateData]);
 
 
@@ -70,8 +95,8 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
   const [clarity, setClarityOptions] = useState<DropdownItem[]>([]);
 
   // Separate center and side diamonds
-  const centerDiamonds = data.filter(d => d.type === 'center');
-  const sideDiamonds = data.filter(d => d.type === 'studded');
+  const centerDiamonds = data.filter(d => d.type === 'CENTER');
+  const sideDiamonds = data.filter(d => d.type === 'STUDDED');
 
   const isValidSize = (size: string) => {
     return size?.trim().length >= 3;
@@ -81,14 +106,14 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
   const STUDDED_CLARITY = 'VVS-VS';
   const STUDDED_RATE = '18000';
 
-  const handleAddDiamond = (type: 'center' | 'studded') => {
+  const handleAddDiamond = (type: 'CENTER' | 'STUDDED') => {
     const newDiamond: DiamondDetails = {
       type,
       shape: '',
       size: '',
-      color: type === 'studded' ? STUDDED_COLOR : '',
-      clarity: type === 'studded' ? STUDDED_CLARITY : '',
-      ratePerCts: type === 'studded' ? STUDDED_RATE : '',
+      color: type === 'STUDDED' ? STUDDED_COLOR : '',
+      clarity: type === 'STUDDED' ? STUDDED_CLARITY : '',
+      ratePerCts: type === 'STUDDED' ? STUDDED_RATE : '',
       discount: '',
       ratePerCtsAfterDis: '',
       totalAmount: '',
@@ -119,12 +144,33 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
   const handleUpdateDiamond = (index: number, updatedDiamond: DiamondDetails) => {
     const { ratePerCts, discount, size, shape, color, clarity, type } = updatedDiamond;
 
-      // For studded diamonds, always use fixed values
-  if (type === 'studded') {
-    updatedDiamond.color = STUDDED_COLOR;
-    updatedDiamond.clarity = STUDDED_CLARITY;
-    updatedDiamond.ratePerCts = STUDDED_RATE;
-  }
+    // For STUDDED diamonds, always use fixed values
+    if (type === 'STUDDED') {
+      updatedDiamond.color = STUDDED_COLOR;
+      updatedDiamond.clarity = STUDDED_CLARITY;
+      updatedDiamond.ratePerCts = STUDDED_RATE;
+
+      const prevDiamond = data[index];
+      const shapeChanged = shape !== prevDiamond.shape;
+      const sizeChanged = size !== prevDiamond.size;
+
+      // Call API for discount if shape and valid size are present
+      if (shape && isValidSize(size) && (shapeChanged || sizeChanged)) {
+        setDiamondRateData(prev => {
+          const updated = { ...prev };
+          delete updated[index];
+          return updated;
+        });
+        debouncedApiCallStudded(shape, size, index);
+      } else if (!shape || !isValidSize(size)) {
+        debouncedApiCallStudded.cancel();
+        setDiamondRateData(prev => {
+          const updated = { ...prev };
+          delete updated[index];
+          return updated;
+        });
+      }
+    }
 
     // Calculate rate per cts after discount
     let ratePerCtsAfterDis = updatedDiamond.ratePerCts ? parseFloat(updatedDiamond.ratePerCts) : 0;
@@ -145,7 +191,7 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
 
 
 
-    if (type === 'center' && shape && color && clarity && isValidSize(size)) {
+    if (type === 'CENTER' && shape && color && clarity && isValidSize(size)) {
       const hasChanged =
         size !== prevValuesRef.current.size ||
         shape !== prevValuesRef.current.shape ||
@@ -159,6 +205,8 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
           return updated;
         });
         debouncedApiCall(size, shape, color, clarity, index);
+        console.log(size, 'size in api call');
+
         prevValuesRef.current = { size, shape, color, clarity };
       }
       else {
@@ -183,6 +231,8 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
 
   const debouncedApiCall = useRef(
     debounce((size, shape, color, clarity, index) => {
+      console.log(size, 'debounce size');
+
       if (!shape || !color || !clarity || !isValidSize(size)) {
         console.log('1');
         return;
@@ -193,7 +243,21 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
   ).current;
 
 
-  const renderDiamondBlock = (diamond: DiamondDetails, index: number, blockIndex: number, type: 'center' | 'studded') => (
+  const debouncedApiCallStudded = useRef(
+    debounce((shape, size, index) => {
+      // Use fixed color and clarity
+      fetchDiamondRate({
+        size,
+        color: STUDDED_COLOR,
+        shape,
+        clarity: STUDDED_CLARITY,
+        index,
+      });
+    }, 600)
+  ).current;
+
+
+  const renderDiamondBlock = (diamond: DiamondDetails, index: number, blockIndex: number, type: 'CENTER' | 'STUDDED') => (
     <View
       key={blockIndex}
       style={styles.card}
@@ -206,7 +270,7 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
           color: '#333',
         }}
       >
-        {type === 'center'
+        {type === 'CENTER'
           ? `Centerpiece Diamond ${blockIndex + 1}`
           : `Studded Diamond ${blockIndex + 1}`}
       </Text>
@@ -221,7 +285,7 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
           wrapperStyle={{ marginRight: AppDimension.SPACING_X_10, flex: 0.5 }}
           title="Shape"
         />
-        {type === 'center' ?
+        {type === 'CENTER' ?
           <CustomDropdown
             placeholder="Select Color"
             actionItems={color}
@@ -244,16 +308,16 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
 
 
       <View style={styles.row}>
-        {type === 'center' ?
-        <CustomDropdown
-          placeholder="Select Clarity"
-          actionItems={clarity}
-          onSelect={item => handleUpdateDiamond(index, { ...diamond, clarity: item.value })}
-          selectedValue={clarity.find(item => item.value === diamond.clarity)}
-          wrapperStyle={{ marginRight: AppDimension.SPACING_X_10, flex: 0.5 }}
-          title="Clarity"
-        />
-         :
+        {type === 'CENTER' ?
+          <CustomDropdown
+            placeholder="Select Clarity"
+            actionItems={clarity}
+            onSelect={item => handleUpdateDiamond(index, { ...diamond, clarity: item.value })}
+            selectedValue={clarity.find(item => item.value === diamond.clarity)}
+            wrapperStyle={{ marginRight: AppDimension.SPACING_X_10, flex: 0.5 }}
+            title="Clarity"
+          />
+          :
           <TextInputComponent
             title="Select Clarity"
             onChangeText={text => handleUpdateDiamond(index, { ...diamond, clarity: text })}
@@ -262,7 +326,7 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
             editable={false}
             wrapperStyle={{ marginRight: AppDimension.SPACING_X_10, flex: 0.5 }}
           />
-        } 
+        }
         <TextInputComponent
           title="Size (cts)"
           placeholder="Enter size"
@@ -286,9 +350,9 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
 
         <CustomDropdown
           placeholder="Select Discount"
-          actionItems={discount}
+          actionItems={discountOptions[index] || []}
           onSelect={item => handleUpdateDiamond(index, { ...diamond, discount: item.value })}
-          selectedValue={discount.find(item => item.value === diamond.discount)}
+          selectedValue={discountOptions[index]?.find(item => item.value === diamond.discount)}
           wrapperStyle={{ flex: 0.5 }}
           title="Discount(%)"
         />
@@ -323,12 +387,12 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
         {/* Center diamonds */}
         {centerDiamonds.map((diamond, blockIndex) => {
           const index = data.findIndex(d => d === diamond);
-          return renderDiamondBlock(diamond, index, blockIndex, 'center');
+          return renderDiamondBlock(diamond, index, blockIndex, 'CENTER');
         })}
         {centerDiamonds.length < 4 && (
           <ButtonComponent
             title="Add Another Diamond"
-            onPress={() => handleAddDiamond('center')}
+            onPress={() => handleAddDiamond('CENTER')}
             style={{ width: 250, alignSelf: 'center' }}
             textStyle={{ textAlign: 'center', fontSize: AppFontSize.FONT_SIZE_16 }}
           />
@@ -339,12 +403,12 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
         {/* Side diamonds */}
         {sideDiamonds.map((diamond, blockIndex) => {
           const index = data.findIndex(d => d === diamond);
-          return renderDiamondBlock(diamond, index, blockIndex, 'studded');
+          return renderDiamondBlock(diamond, index, blockIndex, 'STUDDED');
         })}
         {sideDiamonds.length < 4 && (
           <ButtonComponent
             title="Add Another Diamond"
-            onPress={() => handleAddDiamond('studded')}
+            onPress={() => handleAddDiamond('STUDDED')}
             style={{ width: 250, alignSelf: 'center' }}
             textStyle={{ textAlign: 'center', fontSize: AppFontSize.FONT_SIZE_16 }}
           />
