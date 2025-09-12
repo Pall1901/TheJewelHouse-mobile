@@ -21,7 +21,7 @@ const QuotationItemCard = ({ item, navigation }: QuotationItemCardProps) => {
         navigation.navigate(ScreenName.ORDER_FORM_SCREEN, { item: item });
     };
     const editQuotation = () => {
-        // navigation.navigate(ScreenName.ORDER_FORM_SCREEN, { item: item });
+         navigation.navigate(ScreenName.QUOTATION_FORM_SCREEN, { item: item });
     };
     const { clientDetails, quotationSummary, date, orderStatus } = item;
     const formattedDate = new Date(date).toLocaleDateString();

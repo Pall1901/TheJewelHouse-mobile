@@ -19,10 +19,13 @@ interface Props {
   data: QuotationSummary;
   onChange: (updated: Partial<QuotationForm>) => void;
   onSubmit: () => void;
-  setImageUrl : (url: string) => void;
+  setImageUrl: (url: string) => void;
+  imageUrl: string;
 }
 
-const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChange, onSubmit, setImageUrl }) => {  
+const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChange, onSubmit, setImageUrl,imageUrl }) => {
+  console.log(imageUrl, 'QuotationSummarySection data');
+
   const navigation = useNavigation();
   // Calculate costs
   const goldCost = parseFloat(quotationForm.goldDetails.totalGoldCost) || 0;
@@ -57,12 +60,12 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
     });
   }, [goldCost, labourCost, diamondCost, total, gst, finalTotal]);
 
-  const generatePDF = (values : any) => {
+  const generatePDF = (values: any) => {
     quotationForm.clientDetails.name = values.name;
     quotationForm.clientDetails.contactNumber = values.contactNumber;
     quotationForm.clientDetails.city = values.city;
     onSubmit()
-  } 
+  }
 
   return (
     <View style={[globalStyles.mainContainer]}>
@@ -120,9 +123,9 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
 
         <Formik
           initialValues={{
-            name: '',
-            contactNumber: '',
-            city: ''
+            name: quotationForm?.clientDetails?.name || '',
+            contactNumber: quotationForm?.clientDetails?.contactNumber || '',
+            city: quotationForm?.clientDetails?.city || '',
           }}
           validateOnMount={true}
           validationSchema={validationSchema}
@@ -180,11 +183,11 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
                 />
               </TextInputComponent>
 
-              <UploadImageView setImageUrl= {setImageUrl}/>
+              <UploadImageView setImageUrl={setImageUrl} initialUrl={imageUrl} />
 
 
               <ButtonComponent
-                title={'Generate PDF'}
+                title={imageUrl? 'Update Quotation' : 'Generate PDF'}
                 onPress={() => {
                   handleSubmit();
                 }}

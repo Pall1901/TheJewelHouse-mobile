@@ -27,6 +27,10 @@ export const routes = {
         METHOD: AppConstants.API_METHOD.POST,
         URL: PROD_BASE_URL + 'quotation/submit',
     },
+    UPDATE_QUOTATION: {
+        METHOD: AppConstants.API_METHOD.PUT,
+        URL: PROD_BASE_URL + 'quotation/',
+    },
     GET_QUOTATION_HISTORY: {
         METHOD: AppConstants.API_METHOD.GET,
         URL: PROD_BASE_URL + 'quotation/',

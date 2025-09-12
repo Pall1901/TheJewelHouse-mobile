@@ -1,5 +1,5 @@
 import { ActivityIndicator, Alert, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AppDimension from '../../../app-res/AppDimension'
 import AppColor from '../../../app-res/AppColor'
 import AppFontSize from '../../../app-res/AppFontSize'
@@ -14,6 +14,7 @@ import { PROD_BASE_URL } from '@env';
 
 interface UploadImageViewProps {
     setImageUrl: (url: string) => void;
+     initialUrl?: string;
 }
 
 const uploadOptions = [
@@ -21,11 +22,18 @@ const uploadOptions = [
     { name: 'Click Photo', value: 'camera' },
 ];
 
-const UploadImageView = ({ setImageUrl }: UploadImageViewProps) => {
+const UploadImageView = ({ setImageUrl,initialUrl }: UploadImageViewProps) => {
     const [showDropdown, setShowDropdown] = useState(false);
     const [loading, setLoading] = useState(false);
     const [imageUri, setImageUri] = useState<string | null>(null);
     const { user } = useUser();
+
+    useEffect(() => {
+    if (initialUrl) {
+      setImageUri(initialUrl);      // show the API image
+      setImageUrl(initialUrl);      // send it back to parent so it stays in state
+    }
+  }, [initialUrl]);
 
     const requestCameraPermission = async () => {
         const permission = Platform.select({

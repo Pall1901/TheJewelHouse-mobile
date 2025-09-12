@@ -6,7 +6,7 @@ import { useUser } from '../../ayncStorage/UserContext';
 import DialogModal from '../../components/DialogModal';
 import Loader from '../../components/Loader/Loader';
 import { showToastMessage } from '../../utils/Helper';
-import { QuotationForm } from '../../utils/types';
+import { DiamondDetails, QuotationForm } from '../../utils/types';
 import DiamondDetailsSection from './Components/DiamondDetailsSection';
 import GoldDetailsSection from './Components/GoldDetailsSection';
 import QuotationSummarySection from './Components/QuotationSummarySection';
@@ -17,11 +17,15 @@ type QuotationFormProps = {
   route: any;
 };
 
-const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
+const QuotationFormScreen = ({ navigation, route }: QuotationFormProps) => {
+  const { item } = route.params || {};
   const [currentStep, setCurrentStep] = useState(1);
   const { loader, setLoader } = useUser();
   const [verificationModalVisible, setVerificationModalVisible] = useState(false)
-  const [imageUrl, setImageUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState(item?.image_url || ''); // New state for image URL
+
+
+
 
   const openModal = useCallback(() => {
     setVerificationModalVisible(true);
@@ -34,7 +38,7 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
     downloadAndSharePDF(downloadResult)
   }, [verificationModalVisible]);
 
-  const { submitQuotation, downloadResult, downloadPath } = useQuotationAPI(navigation);
+  const { submitQuotation, downloadResult, downloadPath, updateQuotation } = useQuotationAPI(navigation);
 
   useEffect(() => {
     console.log('imageUrl updated in parent:', imageUrl);
@@ -54,7 +58,7 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
     return unsubscribe;
   }, [navigation, currentStep]);
 
-  const [quotationForm, setQuotationForm] = useState<QuotationForm>({
+  const defaultForm: QuotationForm = {
     clientDetails: { name: '', contactNumber: '', address: '', email: '', city: '' },
     goldDetails: {
       goldPurity: '',
@@ -92,7 +96,41 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
       },
     ],
     quotationSummary: { goldCost: '', labourCost: '', diamondCost: '', gst: '', total: '', finalTotal: '' },
-  });
+  };
+
+  const [quotationForm, setQuotationForm] = useState<QuotationForm>(
+    item ? { ...defaultForm, ...item } : defaultForm
+  );
+
+  const normalizeDiamonds = (diamonds: any[]): DiamondDetails[] => {
+    return diamonds.map(d => ({
+      type: d.type?.toUpperCase() === "CENTER" ? "CENTER" : "STUDDED",
+      shape: d.shape || "",
+      size: d.size?.toString() || "",
+      color: d.color || "",
+      clarity: d.clarity || "",
+      ratePerCts: d.ratePerCts?.toString() || "",
+      discount: d.discount?.toString() || "0",
+      ratePerCtsAfterDis: d.ratePerCtsAfterDis?.toString() || "0",
+      totalAmount: d.totalAmount?.toString() || "0",
+      weight: d.weight?.toString() || "",
+    }));
+  };
+
+  useEffect(() => {
+    if (item) {
+      setQuotationForm({
+        ...defaultForm,      // ensures all keys exist
+        ...item,
+        goldDetails: { ...defaultForm.goldDetails, ...item.goldDetails },
+        quotationSummary: { ...defaultForm.quotationSummary, ...item.quotationSummary },
+        diamondDetails: item.diamondDetails
+          ? normalizeDiamonds(item.diamondDetails)
+          : defaultForm.diamondDetails,
+      });
+    }
+  }, [item]);
+
 
   const isDiamondEmpty = (diamond: any) => {
     return (
@@ -114,13 +152,20 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
       diamondDetails: filteredDiamondDetails,
     };
     console.log('Submitting to API:', filteredForm);
-    submitQuotation(filteredForm, openModal, imageUrl);
+
+    if (item) {
+      updateQuotation(filteredForm, openModal, imageUrl, item._id);
+      return;
+    }
+    else {
+      submitQuotation(filteredForm, openModal, imageUrl);
+    }
   };
 
 
   const downloadAndSharePDF = async (downloadResult: any) => {
-    console.log(downloadResult,'download result');
-    
+    console.log(downloadResult, 'download result');
+
     try {
       if (downloadResult.statusCode === 200) {
         await Share.open({
@@ -169,6 +214,7 @@ const QuotationFormScreen = ({ navigation }: QuotationFormProps) => {
           }
           onSubmit={handleSubmit}
           setImageUrl={setImageUrl}
+          imageUrl={imageUrl}
         />
       )}
 

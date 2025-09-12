@@ -15,12 +15,16 @@ import useQuotationAPI from '../Hook/useQuotationAPI';
 import Loader from '../../../components/Loader/Loader';
 import { useUser } from '../../../ayncStorage/UserContext';
 import { formatNumberWithCommas } from '../../../utils/Helper';
+import { date } from 'yup';
 
 interface Props {
   data: DiamondDetails[];
   onChange: (data: DiamondDetails[]) => void;
   onNext: () => void;
 }
+
+
+
 
 // const discount = Array.from({ length: 11 }, (_, i) => ({
 //   value: `${i}`,
@@ -34,6 +38,7 @@ type DropdownItem = {
 
 
 const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
+  console.log('DiamondDetailsSection component rendered', data);
   const { loader, dropdown } = useUser();
   const navigation = useNavigation();
 

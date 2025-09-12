@@ -34,7 +34,7 @@ export const goldPurityOptions = [
   },
 ]
 
-const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
+const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {  
   const navigation = useNavigation();
   const { loader, setLoader } = useUser();
   const [selected, setSelected] = useState<GoldPurity>(data.goldPurity as GoldPurity || GoldPurity.GOLD_14);
@@ -139,7 +139,7 @@ const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
           title="Gold Weight(grams)"
           placeholder="Enter Weight"
           onChangeText={(text) => onChange({ ...data, weight: text })}
-          value={data.weight}
+          value={data.weight?.toString() || ''} 
           keyboardType="numeric">
         </TextInputComponent>
 
@@ -148,7 +148,7 @@ const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
             Total Gold Cost
           </Text>
           <Text style={styles.text}>
-            ₹{formatNumberWithCommas(computedTotalGoldCost)}
+            ₹{formatNumberWithCommas(data.totalGoldCost || computedTotalGoldCost)}
           </Text>
         </View>
 
@@ -156,7 +156,7 @@ const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
           title="Labour cost(per gram)"
           placeholder="Enter cost"
           onChangeText={(text) => onChange({ ...data, labourCost: text })}
-          value={data.labourCost}
+          value={data.labourCost?.toString() || ''}
           keyboardType="numeric">
         </TextInputComponent>
 
@@ -166,7 +166,7 @@ const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
             Total Labour Cost
           </Text>
           <Text style={styles.text}>
-            ₹{formatNumberWithCommas(computedTotalLabourPrice)}
+            ₹{formatNumberWithCommas(data.totalLabourPrice || computedTotalLabourPrice)}
           </Text>
         </View>
 

@@ -5,7 +5,7 @@ import { checkInternet, showToastMessage } from '../../../utils/Helper';
 import { useState } from 'react';
 import type { DownloadResult } from 'react-native-fs';
 import { HttpStatusCode } from '../../../utils/enums';
-import { createQuotation, getDiamondRate } from '../../../api-services/api';
+import { createQuotation, getDiamondRate, updateQuotationById } from '../../../api-services/api';
 import { QuotationForm } from '../../../utils/types';
 import RNFS from 'react-native-fs';
 
@@ -14,6 +14,7 @@ type UseQuotationReturnType = {
     submitQuotation: (values: any, openModal : any, imageUrl : string) => void;
     downloadResult: DownloadResult | null
     downloadPath : any
+    updateQuotation: (values: any, openModal : any, imageUrl : string, id : string) => void;
 };
 
 
@@ -124,9 +125,58 @@ const useQuotationAPI = (onRateData: (index: number, rateData: any) => void): Us
         }
     }
 
+     const updateQuotation = async (values: QuotationForm, openModal : any, imageUrl : string, id : string) => {
+
+        let datas = {
+            userId: user?.id,
+            date: formattedDate,
+            image_url : imageUrl,
+            ...values
+        };
+        console.log(datas, 'datas');
+
+        setLoader(true);
+        try {
+            const res = await updateQuotationById(id,datas);
+            const { data = {} } = res;
+
+            if (data?.code == HttpStatusCode.OK) {
+                console.log(data.data.pdfUrl);
+                const url = data.data.pdfUrl
+
+                console.log(url,'pdf urllll');
+                
+
+                const baseName = (url.split('/').pop() || 'quotation').replace('.pdf', '');
+                const uniqueName = `${baseName}_${Date.now()}.pdf`;
+                const downloadPath = `${RNFS.DownloadDirectoryPath}/${uniqueName}`;
+                const downloadResult1 = await RNFS.downloadFile({
+                    fromUrl: url,
+                    toFile: downloadPath,
+                }).promise;
+
+                setDownloadResult(downloadResult1)
+                setDownloadPath(downloadPath)
+                openModal();
+            }
+            else {
+                console.log(data?.message);
+                showToastMessage(data?.message, 'danger')
+            }
+        }
+        catch (error) {
+            setLoader(false);
+            console.log(error, 'error');
+            showToastMessage(error.message, 'danger');
+
+        } finally {
+            setLoader(false);
+        }
+    }
 
 
-    return { fetchDiamondRate, submitQuotation, downloadResult, downloadPath };
+
+    return { fetchDiamondRate, submitQuotation, downloadResult, downloadPath , updateQuotation};
 };
 
 export default useQuotationAPI;

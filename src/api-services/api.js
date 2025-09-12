@@ -41,6 +41,13 @@ export const createQuotation = (requestBody) =>
     data: requestBody,
   });
 
+  export const updateQuotationById = (params = '',requestBody) =>
+  apiClient({
+    method: routes.UPDATE_QUOTATION.METHOD,
+    url: routes.UPDATE_QUOTATION.URL + params,
+    data: requestBody,
+  });
+
   export const getQuotationHistoryList = (params = '', requestBody) =>
   apiClient({
     method: routes.GET_QUOTATION_HISTORY.METHOD,
