@@ -59,7 +59,7 @@ const QuotationItemCard = ({ item, navigation }: QuotationItemCardProps) => {
 
                 <View style={{ ...styles.rowView, marginVertical: AppDimension.SPACING_Y_10 }}>
                     <Text style={styles.totalLabel}>Total Price: </Text>
-                    <Text style={styles.totalValue}>₹{formatNumber(quotationSummary.total)}</Text>
+                    <Text style={styles.totalValue}>₹{formatNumber(quotationSummary.finalTotal)}</Text>
                 </View>
 
                 {orderStatus !== 'placed' ?
