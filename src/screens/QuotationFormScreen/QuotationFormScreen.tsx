@@ -82,6 +82,7 @@ const QuotationFormScreen = ({ navigation, route }: QuotationFormProps) => {
         discount: '0',
         ratePerCtsAfterDis: '',
         totalAmount: '',
+        carats :'',
       },
       {
         type: 'STUDDED',
@@ -93,6 +94,7 @@ const QuotationFormScreen = ({ navigation, route }: QuotationFormProps) => {
         discount: '0',
         ratePerCtsAfterDis: '',
         totalAmount: '',
+        carats :''
       },
     ],
     quotationSummary: { goldCost: '', labourCost: '', diamondCost: '', gst: '', total: '', finalTotal: '' },
@@ -114,6 +116,7 @@ const QuotationFormScreen = ({ navigation, route }: QuotationFormProps) => {
       ratePerCtsAfterDis: d.ratePerCtsAfterDis?.toString() || "0",
       totalAmount: d.totalAmount?.toString() || "0",
       weight: d.weight?.toString() || "",
+      carats : d.carats?.toString() || ""
     }));
   };
 

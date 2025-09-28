@@ -76,3 +76,10 @@ export const createQuotation = (requestBody) =>
     data: requestBody,
   });
 
+    export const getSizeRange = (params = '', requestBody) =>
+  apiClient({
+    method: routes.GET_SIZE_RANGE.METHOD,
+    url: routes.GET_SIZE_RANGE.URL + params,
+    data: requestBody,
+  });
+

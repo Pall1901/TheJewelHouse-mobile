@@ -28,6 +28,7 @@ export interface DiamondDetails {
   discount: string;
   ratePerCtsAfterDis : string;
   totalAmount: string;
+  carats: string;
 }
 
 export interface QuotationSummary {

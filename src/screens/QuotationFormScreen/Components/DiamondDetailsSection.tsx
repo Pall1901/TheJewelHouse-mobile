@@ -14,22 +14,16 @@ import { debounce } from 'lodash';
 import useQuotationAPI from '../Hook/useQuotationAPI';
 import Loader from '../../../components/Loader/Loader';
 import { useUser } from '../../../ayncStorage/UserContext';
-import { formatNumberWithCommas } from '../../../utils/Helper';
+import { formatNumberWithCommas, showToastMessage } from '../../../utils/Helper';
 import { date } from 'yup';
+import { HttpStatusCode } from '../../../utils/enums';
+import { getSizeRange } from '../../../api-services/api';
 
 interface Props {
   data: DiamondDetails[];
   onChange: (data: DiamondDetails[]) => void;
   onNext: () => void;
 }
-
-
-
-
-// const discount = Array.from({ length: 11 }, (_, i) => ({
-//   value: `${i}`,
-//   name: `${i}`,
-// }));
 
 type DropdownItem = {
   value: string;
@@ -38,8 +32,9 @@ type DropdownItem = {
 
 
 const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
-  console.log('DiamondDetailsSection component rendered', data);
-  const { loader, dropdown } = useUser();
+  // console.log('DiamondDetailsSection component rendered', data);
+  const { setLoader, dropdown } = useUser();
+
   const navigation = useNavigation();
 
   const [diamondRateData, setDiamondRateData] = useState<{ [index: number]: any }>({});
@@ -98,6 +93,7 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
   const [shapes, setShapeOptions] = useState<DropdownItem[]>([]);
   const [color, setColorOptions] = useState<DropdownItem[]>([]);
   const [clarity, setClarityOptions] = useState<DropdownItem[]>([]);
+  const [sizeRange, setSizeRange] = useState<{ [index: number]: DropdownItem[] }>({});
 
   // Separate center and side diamonds
   const centerDiamonds = data.filter(d => d.type === 'CENTER');
@@ -159,21 +155,23 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
       const shapeChanged = shape !== prevDiamond.shape;
       const sizeChanged = size !== prevDiamond.size;
 
-      // Call API for discount if shape and valid size are present
-      if (shape && isValidSize(size) && (shapeChanged || sizeChanged)) {
-        setDiamondRateData(prev => {
-          const updated = { ...prev };
-          delete updated[index];
-          return updated;
-        });
-        debouncedApiCallStudded(shape, size, index);
-      } else if (!shape || !isValidSize(size)) {
-        debouncedApiCallStudded.cancel();
-        setDiamondRateData(prev => {
-          const updated = { ...prev };
-          delete updated[index];
-          return updated;
-        });
+      if (shapeChanged) {
+        // Clear size when shape changes
+        updatedDiamond.size = '';
+
+        // Reset size range for this diamond
+        setSizeRange(prev => ({
+          ...prev,
+          [index]: [],
+        }));
+
+        // Fetch new size range
+        debouncedApiCallStudded(shape, index);
+      }
+
+      if (shape && size && (shapeChanged || sizeChanged)) {
+        console.log("Calling fetchDiamondRate...");
+        fetchDiamondRate({ size, color, shape, clarity, index });
       }
     }
 
@@ -186,9 +184,25 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
     updatedDiamond.ratePerCtsAfterDis = ratePerCtsAfterDis.toFixed(2);
 
     // Calculate total amount
-    const sizeNum = size ? parseFloat(size) : 0;
-    let totalAmount = ratePerCtsAfterDis * sizeNum;
-    updatedDiamond.totalAmount = totalAmount ? totalAmount.toFixed(2) : '0';
+    if (type === 'STUDDED') {
+      const caratsNum = updatedDiamond.carats ? parseFloat(updatedDiamond.carats) : 0;
+
+      if (!caratsNum) {
+        updatedDiamond.totalAmount = '0';   // Reset if empty or 0
+      } else {
+        let totalAmount = ratePerCtsAfterDis * caratsNum;
+        updatedDiamond.totalAmount = totalAmount ? totalAmount.toFixed(2) : '0';
+      }
+    } else {
+      const sizeNum = size ? parseFloat(size) : 0;
+
+      if (!sizeNum) {
+        updatedDiamond.totalAmount = '0';
+      } else {
+        let totalAmount = ratePerCtsAfterDis * sizeNum;
+        updatedDiamond.totalAmount = totalAmount ? totalAmount.toFixed(2) : '0';
+      }
+    }
 
     const updatedDiamonds = [...data];
     updatedDiamonds[index] = { ...updatedDiamond };
@@ -242,24 +256,47 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
         console.log('1');
         return;
       }
-
       fetchDiamondRate({ size, color, shape, clarity, index });
     }, 600)
   ).current;
 
+  const debouncedApiCallStudded = async (shape, index) => {
+    setLoader(true);
+    setLoader(true);
+    try {
+      const res = await getSizeRange(`color=${STUDDED_COLOR}&shape=${shape}&purity=${STUDDED_CLARITY}`);
+      const { data: resData = {} } = res;
 
-  const debouncedApiCallStudded = useRef(
-    debounce((shape, size, index) => {
-      // Use fixed color and clarity
-      fetchDiamondRate({
-        size,
-        color: STUDDED_COLOR,
-        shape,
-        clarity: STUDDED_CLARITY,
-        index,
-      });
-    }, 600)
-  ).current;
+      if (resData?.code == HttpStatusCode.OK) {
+        setSizeRange(prev => ({
+          ...prev,
+          [index]: transformAsIs(resData.data),
+        }));
+      } else {
+        showToastMessage(resData.message, 'danger');
+      }
+    } catch (error: any) {
+      showToastMessage(error?.message, 'danger');
+    } finally {
+      setLoader(false);
+    }
+  }
+
+
+
+
+  // const debouncedApiCallStudded = useRef(
+  //   debounce((shape, size, index) => {
+  //     // Use fixed color and clarity
+  //     fetchDiamondRate({
+  //       size,
+  //       color: STUDDED_COLOR,
+  //       shape,
+  //       clarity: STUDDED_CLARITY,
+  //       index,
+  //     });
+  //   }, 600)
+  // ).current;
 
 
   const renderDiamondBlock = (diamond: DiamondDetails, index: number, blockIndex: number, type: 'CENTER' | 'STUDDED') => (
@@ -311,9 +348,8 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
         }
       </View>
 
-
-      <View style={styles.row}>
-        {type === 'CENTER' ?
+      {type === 'CENTER' ?
+        <View style={styles.row}>
           <CustomDropdown
             placeholder="Select Clarity"
             actionItems={clarity}
@@ -322,7 +358,18 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
             wrapperStyle={{ marginRight: AppDimension.SPACING_X_10, flex: 0.5 }}
             title="Clarity"
           />
-          :
+
+          <TextInputComponent
+            title="Size (cts)"
+            placeholder="Enter size"
+            onChangeText={text => handleUpdateDiamond(index, { ...diamond, size: text })}
+            value={diamond.size}
+            keyboardType="numeric"
+            wrapperStyle={{ flex: 0.5 }}
+          />
+        </View>
+        :
+        <View style={styles.row}>
           <TextInputComponent
             title="Select Clarity"
             onChangeText={text => handleUpdateDiamond(index, { ...diamond, clarity: text })}
@@ -331,16 +378,36 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
             editable={false}
             wrapperStyle={{ marginRight: AppDimension.SPACING_X_10, flex: 0.5 }}
           />
-        }
+          <CustomDropdown
+            placeholder="Select size"
+            actionItems={sizeRange[index] || []}
+            onSelect={item => handleUpdateDiamond(index, { ...diamond, size: item.value })}
+            selectedValue={(sizeRange[index] || []).find(item => item.value === diamond.size)}
+            wrapperStyle={{ marginRight: AppDimension.SPACING_X_10, flex: 0.5 }}
+            title="Size range"
+          />
+        </View>
+      }
+      {type === 'STUDDED' ?
         <TextInputComponent
-          title="Size (cts)"
-          placeholder="Enter size"
-          onChangeText={text => handleUpdateDiamond(index, { ...diamond, size: text })}
-          value={diamond.size}
+          title="Carats"
+          placeholder="Enter carats"
+          onChangeText={text => {
+            // Keep only numbers
+            let sanitized = text.replace(/[^0-9]/g, '');
+
+            // Limit to 3 digits
+            if (sanitized.length > 3) {
+              sanitized = sanitized.slice(0, 3);
+            }
+
+            handleUpdateDiamond(index, { ...diamond, carats: sanitized });
+          }}
+          value={diamond.carats}
           keyboardType="numeric"
-          wrapperStyle={{ flex: 0.5 }}
         />
-      </View>
+        : <></>
+      }
 
       <View style={styles.row}>
         <TextInputComponent

@@ -47,6 +47,10 @@ export const routes = {
         METHOD: AppConstants.API_METHOD.GET,
         URL: PROD_BASE_URL + 'order/summary',
     },
+    GET_SIZE_RANGE: {
+        METHOD: AppConstants.API_METHOD.GET,
+        URL: PROD_BASE_URL + 'diamonds/diamond-sizes?',
+    },
 
 };
 
