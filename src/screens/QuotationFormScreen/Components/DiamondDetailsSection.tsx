@@ -394,14 +394,14 @@ const DiamondDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
           placeholder="Enter carats"
           onChangeText={text => {
             // Keep only numbers
-            let sanitized = text.replace(/[^0-9]/g, '');
+           // let sanitized = text.replace(/[^0-9]/g, '');
 
             // Limit to 3 digits
-            if (sanitized.length > 3) {
-              sanitized = sanitized.slice(0, 3);
+            if (text.length > 6) {
+              text = text.slice(0, 6);
             }
 
-            handleUpdateDiamond(index, { ...diamond, carats: sanitized });
+            handleUpdateDiamond(index, { ...diamond, carats: text });
           }}
           value={diamond.carats}
           keyboardType="numeric"
