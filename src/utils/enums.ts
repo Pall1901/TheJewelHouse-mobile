@@ -54,6 +54,7 @@ export enum ScreenName {
 }
 
 export enum GoldPurity {
+  GOLD_9 = '9k',
   GOLD_14 = '14k',
   GOLD_18 = '18k',
 }
