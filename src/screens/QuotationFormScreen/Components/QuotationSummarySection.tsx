@@ -1,5 +1,5 @@
-import { ScrollView, Text, View } from 'react-native'
-import React, { useEffect } from 'react'
+import { ScrollView, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
 import { QuotationForm, QuotationSummary } from '../../../utils/types';
 import globalStyles from '../../../theme/globalStyles';
 import Header from '../../../components/Header';
@@ -23,16 +23,24 @@ interface Props {
   imageUrl: string;
 }
 
-const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChange, onSubmit, setImageUrl,imageUrl }) => {
+const QuotationSummarySection: React.FC<Props> = ({
+  quotationForm,
+  data,
+  onChange,
+  onSubmit,
+  setImageUrl,
+  imageUrl,
+}) => {
   console.log(imageUrl, 'QuotationSummarySection data');
 
   const navigation = useNavigation();
   // Calculate costs
   const goldCost = parseFloat(quotationForm.goldDetails.totalGoldCost) || 0;
-  const labourCost = parseFloat(quotationForm.goldDetails.totalLabourPrice) || 0;
+  const labourCost =
+    parseFloat(quotationForm.goldDetails.totalLabourPrice) || 0;
   const diamondCost = quotationForm.diamondDetails.reduce(
     (sum, diamond) => sum + parseFloat(diamond.totalAmount || '0'),
-    0
+    0,
   );
 
   const total = goldCost + labourCost + diamondCost;
@@ -56,7 +64,7 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
         total: total.toFixed(2),
         gst: gst.toFixed(2),
         finalTotal: finalTotal.toFixed(2),
-      }
+      },
     });
   }, [goldCost, labourCost, diamondCost, total, gst, finalTotal]);
 
@@ -64,15 +72,16 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
     quotationForm.clientDetails.name = values.name;
     quotationForm.clientDetails.contactNumber = values.contactNumber;
     quotationForm.clientDetails.city = values.city;
-    onSubmit()
-  }
+    onSubmit();
+  };
 
   return (
     <View style={[globalStyles.mainContainer]}>
-
       <Header name="Quotation Summary" navigation={navigation} />
 
-      <ScrollView style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 8 }}>
+      <ScrollView
+        style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 8 }}
+      >
         {/* Cost Breakdown Section */}
         <View style={styles.card}>
           <View style={styles.sectionHeaderContainer}>
@@ -87,12 +96,14 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
           ].map((item, idx) => (
             <View
               key={idx}
-              style={{ ...styles.row, justifyContent: 'space-between', marginVertical: 4 }}
+              style={{
+                ...styles.row,
+                justifyContent: 'space-between',
+                marginVertical: 4,
+              }}
             >
               <Text style={[styles.text, styles.finalLabel]}>{item.label}</Text>
-              <Text style={[styles.text]}>
-                ₹ {item.value}
-              </Text>
+              <Text style={[styles.text]}>₹ {item.value}</Text>
             </View>
           ))}
         </View>
@@ -102,7 +113,13 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
           <View style={styles.sectionHeaderContainer}>
             <Text style={styles.sectionHeader}>Taxes & Charges</Text>
           </View>
-          <View style={{ ...styles.row, justifyContent: 'space-between', marginVertical: 4 }}>
+          <View
+            style={{
+              ...styles.row,
+              justifyContent: 'space-between',
+              marginVertical: 4,
+            }}
+          >
             <Text style={[styles.text, styles.finalLabel]}>GST (3%)</Text>
             <Text style={styles.text}>₹ {displayGst}</Text>
           </View>
@@ -113,7 +130,13 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
           <View style={styles.sectionHeaderContainer}>
             <Text style={styles.sectionHeader}>Final Amount</Text>
           </View>
-          <View style={{ ...styles.row, justifyContent: 'space-between', marginTop: 8 }}>
+          <View
+            style={{
+              ...styles.row,
+              justifyContent: 'space-between',
+              marginTop: 8,
+            }}
+          >
             <Text style={[styles.text, styles.finalLabel]}>Total</Text>
             <Text style={[styles.text, styles.finalAmount]}>
               ₹ {displayFinalTotal}
@@ -129,7 +152,8 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
           }}
           validateOnMount={true}
           validationSchema={validationSchema}
-          onSubmit={values => generatePDF(values)}>
+          onSubmit={values => generatePDF(values)}
+        >
           {({
             handleChange,
             handleBlur,
@@ -144,7 +168,8 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
                 placeholder="Enter customer name"
                 onChangeText={handleChange('name')}
                 onBlur={handleBlur('name')}
-                value={values.name}>
+                value={values.name}
+              >
                 <ErrorComponent
                   errors={errors}
                   touched={touched}
@@ -160,7 +185,8 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
                 onBlur={handleBlur('contactNumber')}
                 value={values.contactNumber}
                 keyboardType="number-pad"
-                maxLength={10}>
+                maxLength={10}
+              >
                 <ErrorComponent
                   errors={errors}
                   touched={touched}
@@ -174,7 +200,8 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
                 placeholder="Enter city"
                 onChangeText={handleChange('city')}
                 onBlur={handleBlur('city')}
-                value={values.city}>
+                value={values.city}
+              >
                 <ErrorComponent
                   errors={errors}
                   touched={touched}
@@ -183,11 +210,13 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
                 />
               </TextInputComponent>
 
-              <UploadImageView setImageUrl={setImageUrl} initialUrl={imageUrl} />
-
+              <UploadImageView
+                setImageUrl={setImageUrl}
+                initialUrl={imageUrl}
+              />
 
               <ButtonComponent
-                title={imageUrl? 'Update Quotation' : 'Generate PDF'}
+                title={'Generate PDF'}
                 onPress={() => {
                   handleSubmit();
                 }}
@@ -195,12 +224,9 @@ const QuotationSummarySection: React.FC<Props> = ({ quotationForm, data, onChang
             </>
           )}
         </Formik>
-
       </ScrollView>
-    </View >
+    </View>
+  );
+};
 
-  )
-}
-
-export default QuotationSummarySection
-
+export default QuotationSummarySection;
