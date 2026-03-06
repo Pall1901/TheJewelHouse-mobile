@@ -24,25 +24,17 @@ interface Props {
 }
 
 export const goldPurityOptions = [
-  {
-    value: GoldPurity.GOLD_9,
-    name: GoldPurity.GOLD_9,
-  },
-  {
-    value: GoldPurity.GOLD_14,
-    name: GoldPurity.GOLD_14,
-  },
-  {
-    value: GoldPurity.GOLD_18,
-    name: GoldPurity.GOLD_18,
-  },
+  { value: GoldPurity.GOLD_9KT, name: GoldPurity.GOLD_9KT },
+  { value: GoldPurity.GOLD_14KT, name: GoldPurity.GOLD_14KT },
+  { value: GoldPurity.GOLD_18KT, name: GoldPurity.GOLD_18KT },
+  { value: GoldPurity.SILVER_925, name: GoldPurity.SILVER_925 },
+  { value: GoldPurity.PLATINUM_999, name: GoldPurity.PLATINUM_999 },
 ];
-
 const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
   const navigation = useNavigation();
   const { loader, setLoader } = useUser();
   const [selected, setSelected] = useState<GoldPurity>(
-    (data.goldPurity as GoldPurity) || GoldPurity.GOLD_14,
+    (data.goldPurity as GoldPurity) || GoldPurity.GOLD_14KT,
   );
   const [color, setColor] = useState<GoldColor>(
     (data.goldColor as GoldColor) || GoldColor.YELLOW,
@@ -74,9 +66,11 @@ const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
   };
 
   const rateMap = {
-    [GoldPurity.GOLD_9]: goldRateData?.rate9k,
-    [GoldPurity.GOLD_14]: goldRateData?.rate14k,
-    [GoldPurity.GOLD_18]: goldRateData?.rate18k,
+    [GoldPurity.GOLD_9KT]: goldRateData?.rate9k,
+    [GoldPurity.GOLD_14KT]: goldRateData?.rate14k,
+    [GoldPurity.GOLD_18KT]: goldRateData?.rate18k,
+    [GoldPurity.SILVER_925]: goldRateData?.rate925Silver,
+    [GoldPurity.PLATINUM_999]: goldRateData?.rate999Platinum,
   };
 
   const currentRatePerGram = goldRateData
@@ -125,9 +119,13 @@ const GoldDetailsSection: React.FC<Props> = ({ data, onChange, onNext }) => {
 
         <RadioButton
           options={goldPurityOptions}
-          label={'Gold Purity'}
-          setSelected={setSelected}
+          label="Metal"
           selected={selected}
+          setSelected={setSelected}
+          itemContainerStyle={{
+            width: '33%',
+            marginBottom: 10,
+          }}
         />
 
         <GoldColorSelector selectedColor={color} onSelect={setColor} />

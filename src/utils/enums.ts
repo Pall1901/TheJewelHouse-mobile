@@ -1,5 +1,4 @@
 
-
 export enum HttpStatusCode {
   // 1xx Informational Responses
   Continue = 100,
@@ -54,9 +53,11 @@ export enum ScreenName {
 }
 
 export enum GoldPurity {
-  GOLD_9 = '9k',
-  GOLD_14 = '14k',
-  GOLD_18 = '18k',
+  GOLD_9KT = '9kt',
+  GOLD_14KT = '14kt',
+  GOLD_18KT = '18kt',
+  SILVER_925 = '925 silver',
+  PLATINUM_999 = '999 platinum',
 }
 
 export enum GoldColor {

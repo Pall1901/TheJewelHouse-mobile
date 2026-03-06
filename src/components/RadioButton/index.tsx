@@ -3,28 +3,33 @@ import { Pressable, Text, View } from 'react-native';
 import { styles } from './styles';
 
 interface RadioButtonProps {
-  options: Array<{ value: string; name: string }>; 
+  options: Array<{ value: string; name: string }>;
   label: string;
   selected: string;
   setSelected: (value: any) => void;
 }
 
-const RadioButton = ({ options, label, selected, setSelected, }: RadioButtonProps) => {
+const RadioButton = ({
+  options,
+  label,
+  selected,
+  setSelected,
+}: RadioButtonProps) => {
   return (
     <View style={styles.view}>
       <Text style={styles.header}>{label}</Text>
 
-      <View style={{ flexDirection: 'row',alignItems:'center',flex:2 }}>
-
+      <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}>
         {options.map(item => (
           <Pressable
-            
             style={styles.pressable}
             key={item.value}
-            onPress={() => setSelected(item.value)}>
-            <View style={[styles.radioButton]}>
-              {selected == item.value ? <View style={styles.radio} /> : <></>}
+            onPress={() => setSelected(item.value)}
+          >
+            <View style={styles.radioButton}>
+              {selected === item.value && <View style={styles.radio} />}
             </View>
+
             <Text style={styles.title}>{item.name}</Text>
           </Pressable>
         ))}
@@ -34,5 +39,3 @@ const RadioButton = ({ options, label, selected, setSelected, }: RadioButtonProp
 };
 
 export default RadioButton;
-
-
