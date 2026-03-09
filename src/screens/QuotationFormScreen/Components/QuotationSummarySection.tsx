@@ -72,6 +72,8 @@ const QuotationSummarySection: React.FC<Props> = ({
     quotationForm.clientDetails.name = values.name;
     quotationForm.clientDetails.contactNumber = values.contactNumber;
     quotationForm.clientDetails.city = values.city;
+    quotationForm.clientDetails.remark = values.remark;
+    quotationForm.clientDetails.styleCode = values.styleCode;
     onSubmit();
   };
 
@@ -149,6 +151,8 @@ const QuotationSummarySection: React.FC<Props> = ({
             name: quotationForm?.clientDetails?.name || '',
             contactNumber: quotationForm?.clientDetails?.contactNumber || '',
             city: quotationForm?.clientDetails?.city || '',
+            remark: quotationForm?.clientDetails?.remark || '',
+            styleCode: quotationForm?.clientDetails?.styleCode || '',
           }}
           validateOnMount={true}
           validationSchema={validationSchema}
@@ -209,6 +213,22 @@ const QuotationSummarySection: React.FC<Props> = ({
                   flag={false}
                 />
               </TextInputComponent>
+
+              <TextInputComponent
+                title="Remark"
+                placeholder="Enter remark"
+                onChangeText={handleChange('remark')}
+                onBlur={handleBlur('remark')}
+                value={values.remark}
+              ></TextInputComponent>
+
+              <TextInputComponent
+                title="Style Code"
+                placeholder="Enter style code"
+                onChangeText={handleChange('styleCode')}
+                onBlur={handleBlur('styleCode')}
+                value={values.styleCode}
+              ></TextInputComponent>
 
               <UploadImageView
                 setImageUrl={setImageUrl}

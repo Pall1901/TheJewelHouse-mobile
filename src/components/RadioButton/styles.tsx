@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
   },
   title: {
     color: AppColor.black,
-    fontSize: AppFontSize.FONT_SIZE_16,
+    fontSize: AppFontSize.FONT_SIZE_14,
     fontFamily: AppFontFamily.ManropeBold,
     paddingStart: AppDimension.SPACING_X_10,
     textTransform: 'capitalize',

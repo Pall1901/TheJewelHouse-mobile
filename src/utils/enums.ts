@@ -56,8 +56,8 @@ export enum GoldPurity {
   GOLD_9KT = '9kt',
   GOLD_14KT = '14kt',
   GOLD_18KT = '18kt',
-  SILVER_925 = '925 silver',
-  PLATINUM_999 = '999 platinum',
+  SILVER_925 = '925\nsilver',
+  PLATINUM_999 = '999\nplatinum',
 }
 
 export enum GoldColor {

@@ -4,6 +4,8 @@ export interface ClientDetails {
   email: string;
   address: string;
   city : string;
+  remark : string;
+  styleCode : string;
 }
 
 export interface GoldDetails {
